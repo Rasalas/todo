@@ -11,7 +11,7 @@ if(isset($_POST['task_id']) && !isset($_GET['stop'])){
 }
 if(isset($_GET['stop'])){
     $database->stopWorktime($form_result);
-    header("Location: index.php");
+    header("Location: task-view.php");
 }
 ?>
 

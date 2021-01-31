@@ -13,6 +13,6 @@ if(isset($_POST['task_id'])){
         $database->updateToUndone($_POST['task_id']);
     }
 
-    header("Location: index.php");
+    header("Location: task-view.php");
 }
 ?>

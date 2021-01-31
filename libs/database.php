@@ -64,6 +64,31 @@ class database
         $result = $this->conn->query($sql);
         return $result;
     }
+    /**
+     * GET ALL tasks by project_id
+     * 
+     * @return resutl|msqli_result
+     */
+    public function getAllTasksByProjectID($id){
+        $sql = "SELECT * FROM
+                (SELECT * FROM task WHERE `project_id`= '" . mysqli_real_escape_string($this->conn, $id)."') t
+                LEFT JOIN ( SELECT task_id, SUM(TIMESTAMPDIFF(MINUTE, start_time, end_time)) AS 'duration' FROM worktime GROUP BY task_id) w
+                ON t.id = task_id";
+        $result = $this->conn->query($sql);
+        return $result;
+    }
+
+    
+    /**
+     * GET ALL Projects
+     * 
+     * @return resutl|msqli_result
+     */
+    public function getAllProjects(){
+        $sql = "SELECT * FROM project";
+        $result = $this->conn->query($sql);
+        return $result;
+    }
 
     /**
      * INSERT task
@@ -72,9 +97,11 @@ class database
      */
     public function createTask($form_result){
         $sql = "INSERT INTO task (
-            `text`
+            `text`,
+            `project_id`
             ) VALUES (
-            '" . mysqli_real_escape_string($this->conn, $form_result['task_text'])."'
+            '" . mysqli_real_escape_string($this->conn, $form_result['task_text'])."',
+            '" . mysqli_real_escape_string($this->conn, $form_result['project_id'])."'
             );
         ";
 
@@ -164,4 +191,6 @@ class database
             return true;
         }
     }
+
+    
 } // Klasse Ende

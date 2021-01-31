@@ -1,9 +1,10 @@
 <?php
-header("Location: project-view.php");
-exit();
 session_start();
 require 'libs/database.php';
 require 'config.php';
+if(isset($_POST['project_id'])){
+    $_SESSION['project_id'] = $_POST['project_id'];
+}
 
 // Setup Database
 $database = new database($config["servername"], $config["username"], $config["password"], $config["dbname"]);
@@ -12,7 +13,7 @@ $database = new database($config["servername"], $config["username"], $config["pa
 $page['content'] = '';
 
 // Get Data from Database
-$result = $database->getAllTasks();
+$result = $database->getAllTasksByProjectID($_SESSION['project_id']);
 
 // Create Content
 $table_tr_start = '<tr>';
@@ -111,7 +112,10 @@ function getStartWorktimeButton($id)
 </body>
 <footer class="footer">
     <div class="container px-5 mt-5" style="display:flex; justify-content:center;">
-        <a href="create-todo.php"><input id="create-task" type="button" value="Neue Aufgabe"></a>
+        <form action="create-todo.php" method="POST">
+            <input type="hidden" id="project_id" name="project_id" value="<?=$_POST['project_id']?>">
+            <input type="submit" id="create-task" type="button" value="Neue Aufgabe">
+        </form>
     </div>
 </footer>
 
