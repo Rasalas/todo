@@ -71,13 +71,12 @@ class database
      */
     public function getAllTasksByProjectID($id){
         $sql = "SELECT * FROM
-                (SELECT * FROM task WHERE `project_id`= '" . mysqli_real_escape_string($this->conn, $id)."') t
-                LEFT JOIN ( SELECT task_id, SUM(TIMESTAMPDIFF(MINUTE, start_time, end_time)) AS 'duration' FROM worktime GROUP BY task_id) w
+                (SELECT id, project_id, `text`, is_done FROM task WHERE `project_id`= '" . mysqli_real_escape_string($this->conn, $id)."') t
+                LEFT JOIN ( SELECT task_id, SUM(TIMESTAMPDIFF(MINUTE, start_time, end_time)) AS 'duration', MIN(start_time) AS 'started', MAX(end_time) AS 'ended' FROM worktime GROUP BY task_id) w
                 ON t.id = task_id";
         $result = $this->conn->query($sql);
         return $result;
     }
-
     
     /**
      * GET ALL Projects

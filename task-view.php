@@ -24,11 +24,10 @@ while ($row = $result->fetch_assoc()) {
     $i++;
     // Create Row
     $table_tr_content = '';
-    $table_tr_content .= '<td>' . $row["id"] . '</td>';
     $table_tr_content .= '<td>' . getIsDoneButton($row["id"], $row["is_done"]) . '</td>';
     $table_tr_content .= '<td>' . $row["text"] . '</td>';
-    $table_tr_content .= '<td>' . $row["timestamp_created"] . '</td>';
-    $table_tr_content .= '<td>' . $row["timestamp_done"] . '</td>';
+    $table_tr_content .= '<td>' . $row["started"] . '</td>';
+    $table_tr_content .= '<td>' . $row["ended"] . '</td>';
     $table_tr_content .= '<td>' . $row["duration"] . '</td>';
     $table_tr_content .= '<td>' . getStartWorktimeButton($row["id"]) . '</td>';
 
@@ -92,11 +91,10 @@ function getStartWorktimeButton($id)
     <div class="container px-5">
         <table style="width:100%">
             <tr>
-                <th>ID</th>
                 <th>Erledigt</th>
                 <th>Text</th>
-                <th>Created @</th>
-                <th>Done @</th>
+                <th>Started @</th>
+                <th>Ended @</th>
                 <th>Duration</th>
                 <th></th>
             </tr>
