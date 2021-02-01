@@ -72,7 +72,6 @@ if (isset($_GET['task'])) {
             if(isset($_POST['project_id'])){
                 $_SESSION['project_id'] = $_POST['project_id'];
             }
-
             // Clean content
             $page['content'] = '';
 
@@ -84,8 +83,8 @@ if (isset($_GET['task'])) {
             $table_tr_end = '</tr>';
             $i = 0;
 
-            while ($project = $result->fetch_assoc()) {
-                $projects[] = $project;
+            while ($task = $result->fetch_assoc()) {
+                $tasks[] = $task;
             }
 
             $result->fetch_array();
@@ -94,8 +93,9 @@ if (isset($_GET['task'])) {
             $data = array();
             $data['page'] = $page;
             
-            echo $twig->render('projects.html', [
-                'projects' => $projects,
+            echo $twig->render('tasks.html', [
+                'tasks' => $tasks,
+                'project_id' => $_SESSION['project_id'],
                 'title' => 'ToDo'
             ]);
 
