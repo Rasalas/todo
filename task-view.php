@@ -2,9 +2,8 @@
 session_start();
 require 'libs/database.php';
 require 'config.php';
-if(isset($_POST['project_id'])){
-    $_SESSION['project_id'] = $_POST['project_id'];
-}
+
+
 
 // Setup Database
 $database = new database($config["servername"], $config["username"], $config["password"], $config["dbname"]);

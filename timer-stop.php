@@ -62,8 +62,13 @@ if(isset($_GET['stop'])){
             var minutes = Math.floor((duration % (1000 * 60 * 60)) / (1000 * 60));
             var seconds = Math.floor((duration % (1000 * 60)) / 1000);
 
-            document.getElementById('timer').innerHTML = days + "d " + hours + "h " + minutes + "m " + seconds + "s ";
+            document.getElementById('timer').innerHTML = days + "d " + hours + "h " + leadingZeros(minutes,2) + "m " + leadingZeros(seconds,2) + "s ";
         },1000);
+
+        function leadingZeros(number, count){
+            if(count<number.toString().length) throw new Error("Number longer than count")
+            return ("0".repeat(count) + number).slice(-count)
+        }
 
     </script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
