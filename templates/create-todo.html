@@ -23,25 +23,14 @@
         <h1>{{ title }}</h1>
     </nav>
     <div class="container px-5">
-        <table style="width:100%">
-                <tr>
-                    <th>ID</th>
-                    <th></th>
-                    <th>Name</th>
-                </tr>
-                {% for project in projects %}
-                    <tr>
-                        <td>{{ project.id }}</td>
-                        <td>
-                            <form action="tasks" method="POST">
-                                <input type="hidden" id="project_id" name="project_id" value="{{ project.id }}">
-                                <button type="submit"><i class="material-icons">launch</i></button>
-                            </form>
-                        </td>
-                        <td>{{ project.name }}</td>
-                    </tr>
-                {% endfor %}
-        </table>
+        <form action="task-insert" method="POST">
+            <div class="form-group">
+                <label for="task_text">Aufgabe</label>
+                <input type="hidden" id="project_id" name="project_id" value="{{ project_id }}">
+                <input type="text" class="form-control" id="task_text" name="task_text" placeholder="Fische füttern ...">
+            </div>
+            <button type="submit" class="btn btn-primary">Speichern</button>
+        </form>
     </div>
 
 

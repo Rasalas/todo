@@ -168,8 +168,8 @@ class database
             echo 'Error MySQL: ' . $this->conn->error . '<br />';
             return false;
         } else {
-            $_POST['insert_id'] = $this->conn->insert_id;
-            return true;
+            //$_POST['insert_id'] = $this->conn->insert_id;
+            return  $this->conn->insert_id;
         }
     }
 

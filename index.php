@@ -60,7 +60,7 @@ if (isset($_GET['task'])) {
             // Sending content to data
             $data = array();
             $data['page'] = $page;
-            
+
             echo $twig->render('projects.html', [
                 'projects' => $projects,
                 'title' => 'ToDo'
@@ -69,7 +69,7 @@ if (isset($_GET['task'])) {
             break;
         case 'tasks':
 
-            if(isset($_POST['project_id'])){
+            if (isset($_POST['project_id'])) {
                 $_SESSION['project_id'] = $_POST['project_id'];
             }
             // Clean content
@@ -92,7 +92,7 @@ if (isset($_GET['task'])) {
             // Sending Content to Data
             $data = array();
             $data['page'] = $page;
-            
+
             echo $twig->render('tasks.html', [
                 'tasks' => $tasks,
                 'project_id' => $_SESSION['project_id'],
@@ -100,16 +100,108 @@ if (isset($_GET['task'])) {
             ]);
 
             break;
+
+        case 'task-create':
+            echo $twig->render('todo_form.html', ['project_id' => $_SESSION['project_id']]);
+            break;
+        case 'task-insert':
+
+            // Get Data from Form
+            $form_result = $_POST;
+
+            // Create Kunden
+            $database->createTask($form_result);
+
+            // Redirect Kunden-Liste
+            if (isset($_SERVER['HTTPS'])) {
+                $protocol = ($_SERVER['HTTPS'] && $_SERVER['HTTPS'] != "off") ? "https" : "http";
+            } else {
+                $protocol = 'http';
+            }
+            $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/todo/tasks/";
+            header($redirect);
+            exit;
+
+            break;
+
+        case 'task-done':
+
+            // Get Data from Form
+            $form_result = $_POST;
+
+            if (isset($_POST['task_id'])) {
+                if ($_POST['is_done'] == 0) {
+                    $database->updateToDone($_POST['task_id']);
+                } else {
+                    $database->updateToUndone($_POST['task_id']);
+                }
+
+                // Redirect Kunden-Liste
+                if (isset($_SERVER['HTTPS'])) {
+                    $protocol = ($_SERVER['HTTPS'] && $_SERVER['HTTPS'] != "off") ? "https" : "http";
+                } else {
+                    $protocol = 'http';
+                }
+                $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/todo/tasks/";
+                header($redirect);
+                exit;
+            } else {
+                echo "Task nicht gefunden!";
+            }
+
+            break;
+
+        case 'timer':
+
+            // get data from form
+            $form_result = $_POST;
+
+            // start timer
+            $insert_id = $database->createWorktime($form_result);
+
+
+            echo $twig->render('timer_form.html', [
+                'task_id' => $form_result['task_id'],
+                'insert_id' => $insert_id,
+                'title' => 'ToDo'
+            ]);
+
+            break;
+
+        case 'timer-stop':
+
+            // get data from form
+            $form_result = $_POST;
+
+            // stop timer
+            $database->stopWorktime($form_result);
+
+            // Redirect Kunden-Liste
+            if (isset($_SERVER['HTTPS'])) {
+                $protocol = ($_SERVER['HTTPS'] && $_SERVER['HTTPS'] != "off") ? "https" : "http";
+            } else {
+                $protocol = 'http';
+            }
+            $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/todo/tasks/";
+            header($redirect);
+
         case 'test':
             echo $twig->render('projects.html', ['title' => 'ToDo']);
             break;
         default:
 
-            echo 'Fehler!';
-            break;
+            echo "Fehler!!";
     }
 } else {
-    exit("Falscher Befehl!");
+    //exit("Falscher Befehl!");
+    // Redirect Kunden-Liste
+    if (isset($_SERVER['HTTPS'])) {
+        $protocol = ($_SERVER['HTTPS'] && $_SERVER['HTTPS'] != "off") ? "https" : "http";
+    } else {
+        $protocol = 'http';
+    }
+    $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/todo/projects";
+    header($redirect);
 }
 
 /**
