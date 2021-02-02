@@ -33,26 +33,34 @@
                 <th></th>
             </tr>
                 {% for task in tasks %}
-                    <tr>
-                        <td>
-                            <form action="/todo/task-done" method="POST">
-                                <input type="hidden" id="task_id" name="task_id" value="{{ task.id }}">
-                                <input type="hidden" id="is_done" name="is_done" value="{{ task.is_done }}">
-                                <button type="submit"><i class="material-icons">{{ task.is_done == 1 ? "check_box" : "check_box_outline_blank" }}</i></button>
-                            </form>
-                        </td>
-                        <td>{{ task.text }}</td>
-                        <td>{{ task.started }}</td>
-                        <td>{{ task.ended }}</td>
-                        <td>{{ task.duration }}</td>
-                        <td>
-                            <form action="/todo/timer" method="POST">
-                                <input type="hidden" id="task_id" name="task_id" value="{{ task.id }}">
-                                <button type="submit"><i class="material-icons">play_arrow</i></button>
-                            </form>
-                        </td>
-                    </tr>
+                <tr>
+                    <td>
+                        <form action="/todo/task-done" method="POST">
+                            <input type="hidden" id="task_id" name="task_id" value="{{ task.id }}">
+                            <input type="hidden" id="is_done" name="is_done" value="{{ task.is_done }}">
+                            <button type="submit"><i class="material-icons">{{ task.is_done == 1 ? "check_box" : "check_box_outline_blank" }}</i></button>
+                        </form>
+                    </td>
+                    <td>{{ task.text }}</td>
+                    <td>{{ task.started }}</td>
+                    <td>{{ task.ended }}</td>
+                    <td>{{ task.duration }}</td>
+                    <td>
+                        <form action="/todo/timer" method="POST">
+                            <input type="hidden" id="task_id" name="task_id" value="{{ task.id }}">
+                            <button type="submit"><i class="material-icons">timer</i></button>
+                        </form>
+                    </td>
+                </tr>
                 {% endfor %}
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td><hr><strong>Σ {{ sumduration }}</strong></td>
+                    <td></td>
+                </tr>
         </table>
     </div>
 
@@ -64,7 +72,7 @@
 </body>
 <footer class="footer">
     <div class="container px-5 mt-5" style="display:flex; justify-content:center;">
-        <form action="task-create" method="POST">
+        <form action="/todo/task-create" method="POST">
             <input type="hidden" id="project_id" name="project_id" value="{{ project_id }}">
             <input type="submit" id="create-task" type="button" value="Neue Aufgabe">
         </form>

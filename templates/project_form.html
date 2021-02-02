@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
-    <style>td:nth-child(3) { width: 100%; }</style>
+    
     <link rel="icon" href="wave.png" type="image/png">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <!--Let browser know website is optimized for mobile-->
@@ -23,24 +23,14 @@
         <h1>{{ title }}</h1>
     </nav>
     <div class="container px-5">
-        <table style="width:30%">
-                <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                </tr>
-                {% for project in projects %}
-                    <tr>
-                        <td>{{ project.id }}</td>
-                        <td>
-                            <form action="/todo/tasks" method="POST">
-                                <input type="hidden" id="project_id" name="project_id" value="{{ project.id }}">
-                                <button class="py-2 my-2" type="submit" style="width:100%; height:100%; background-color: bisque;"> {{ project.name }}</button>
-                            </form>
-                            
-                        </td>
-                    </tr>
-                {% endfor %}
-        </table>
+        <form action="project-insert" method="POST">
+            <div class="form-group">
+                <label for="project_text">Projekt</label>
+                <input type="hidden" id="project_id" name="project_id" value="{{ project_id }}">
+                <input type="text" class="form-control" id="project_text" name="project_text" placeholder="Projekt eingeben ...">
+            </div>
+            <button type="submit" class="btn btn-primary">Speichern</button>
+        </form>
     </div>
 
 
@@ -50,11 +40,6 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
 </body>
 <footer class="footer">
-    <div class="container px-5 mt-5" style="display:flex; justify-content:center;">
-        <form action="/todo/project-create" method="POST">
-            <input type="submit" id="create-task" type="button" value="Neues Projekt">
-        </form>
-    </div>
 </footer>
 
 </html>

@@ -64,6 +64,22 @@ class database
         $result = $this->conn->query($sql);
         return $result;
     }
+
+    /**
+     * GET SUM(duration) by project_id
+     * 
+     * @return resutl|msqli_result
+     */
+    public function getProjectDuration($id){
+        $sql= "SELECT project_id, SUM(duration) AS 'sum_duration' FROM
+            (SELECT id, project_id FROM task WHERE `project_id`= '" . mysqli_real_escape_string($this->conn, $id)."') t
+            LEFT JOIN ( SELECT task_id, SUM(TIMESTAMPDIFF(MINUTE, start_time, end_time)) AS 'duration' FROM worktime GROUP BY task_id) w
+            ON t.id = task_id";
+
+        $result = $this->conn->query($sql)->fetch_object()->sum_duration;
+        return $result;
+    }
+
     /**
      * GET ALL tasks by project_id
      * 
@@ -87,6 +103,27 @@ class database
         $sql = "SELECT * FROM project";
         $result = $this->conn->query($sql);
         return $result;
+    }
+
+    /**
+     * INSERT task
+     * 
+     * @return resutl|msqli_result
+     */
+    public function createProject($form_result){
+        $sql = "INSERT INTO project (
+            `name`
+            ) VALUES (
+            '" . mysqli_real_escape_string($this->conn, $form_result['project_text'])."'
+            );
+        ";
+
+        if (!$this->conn->query($sql)) {
+            echo 'Error MySQL: ' . $this->conn->error . '<br />';
+            return false;
+        } else {
+            return true;
+        }
     }
 
     /**

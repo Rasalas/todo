@@ -67,35 +67,59 @@ if (isset($_GET['task'])) {
             ]);
 
             break;
+        case 'project-create':
+
+            echo $twig->render('project_form.html', []);
+
+            break;
+
+        case 'project-insert':
+
+            // Get Data from Form
+            $form_result = $_POST;
+
+            // Create Kunden
+            $database->createProject($form_result);
+
+            // Redirect Kunden-Liste
+            if (isset($_SERVER['HTTPS'])) {
+                $protocol = ($_SERVER['HTTPS'] && $_SERVER['HTTPS'] != "off") ? "https" : "http";
+            } else {
+                $protocol = 'http';
+            }
+            $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/todo/projects/";
+            header($redirect);
+            exit;
+            
+            break;
         case 'tasks':
 
             if (isset($_POST['project_id'])) {
                 $_SESSION['project_id'] = $_POST['project_id'];
             }
             // Clean content
-            $page['content'] = '';
+            $tasks = NULL; 
 
             // Get data from database
             $result = $database->getAllTasksByProjectID($_SESSION['project_id']);
+            $sum_duration = $database->getProjectDuration($_SESSION['project_id']);
 
             // Create Content
             $table_tr_start = '<tr>';
             $table_tr_end = '</tr>';
             $i = 0;
 
-            while ($task = $result->fetch_assoc()) {
-                $tasks[] = $task;
+            if($result){
+                while ($task = $result->fetch_assoc()) {
+                    $tasks[] = $task;
+                }
+                $result->fetch_array();
             }
-
-            $result->fetch_array();
-
-            // Sending Content to Data
-            $data = array();
-            $data['page'] = $page;
 
             echo $twig->render('tasks.html', [
                 'tasks' => $tasks,
                 'project_id' => $_SESSION['project_id'],
+                'sumduration' => formatTime($sum_duration),
                 'title' => 'ToDo'
             ]);
 
@@ -209,14 +233,27 @@ if (isset($_GET['task'])) {
  * 
  */
 
-function getOpenProjectButton($id) //unbenutzt - mit Twig in projects.html
-{
-    $btn = '';
-    $btn .= '<form action="task-view.php" method="POST">';
-    $btn .= '<input type="hidden" id="project_id" name="project_id" value="' . $id . '">';
-    $btn .= '<button type="submit"><i class="material-icons">launch</i></button>';
-    $btn .= '</form>';
-    return $btn;
+function formatTime($mins) {
+    $str = "";
+    if(abs($mins) < 60){
+        $str = strval(abs($mins)) . "min";
+    }else if(abs($mins) % 60 == 0){
+        $str = abs($mins)/60 .":00h";
+    }else{
+        $hours = floor(abs($mins) / 60);
+        $minutes = (abs($mins) % 60);
+        if($hours > 0){
+            $str .= strval($hours) . ":";
+        }
+        if($minutes > 0){
+            $str .= sprintf('%02d',$minutes) . "h";
+        }
+    }
+    if($mins<0){
+        return "-". $str;
+    }else{
+        return $str;
+    }
 }
 //Übergangsweise:
 //header("Location: project-view.php"); // TODO: Log-in
