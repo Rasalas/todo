@@ -1,5 +1,5 @@
 <?php
-session_start();
+include('auth.php');
 require 'libs/database.php';
 require 'config.php';
 require_once 'twig/vendor/autoload.php';
@@ -40,7 +40,53 @@ if (isset($_GET['task'])) {
             echo 'Das hier ist ein leeres Dashboard :)';
             break;
         case 'login':
-            echo $twig->render('login.html', ['title' => 'ToDo']);
+            if (!isset($_GET['go'])) {
+                $data = array();
+                $data['title'] = 'ToDo';
+                if (isset($_SESSION['error'])) {
+                    $data['error'] = $_SESSION['error'];
+                    unset($_SESSION['error']);
+                }
+                echo $twig->render('login.html', $data);
+            } else {
+                // Get data from form
+                $form_result = $_POST;
+
+                $email = $form_result['email'];
+                $password = $form_result['password'];
+
+                $result = $database->checkUserLogin($email);
+                $user = $result->fetch_assoc();
+
+                if ($user !== false && password_verify($password, $user['password'])) {
+                    $_SESSION['uid'] = $user['id'];
+                    $_SESSION['angemeldet'] = true;
+
+                    // Redirect projects
+                    if (isset($_SERVER['HTTPS'])) {
+                        $protocol = ($_SERVER['HTTPS'] && $_SERVER['HTTPS'] != "off") ? "https" : "http";
+                    } else {
+                        $protocol = 'http';
+                    }
+                    $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/todo/projects/";
+                    header($redirect);
+                } else {
+                    unset($_GET['go']);
+                    $_SESSION['error'] = 'E-Mail oder Passwort falsch';
+                    // Redirect login
+                    if (isset($_SERVER['HTTPS'])) {
+                        $protocol = ($_SERVER['HTTPS'] && $_SERVER['HTTPS'] != "off") ? "https" : "http";
+                    } else {
+                        $protocol = 'http';
+                    }
+                    $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/todo/login/";
+                    header($redirect);
+                }
+            }
+            break;
+        case 'register':
+            echo 'Das hier ist eine leere Registrierungsseite :)';
+            //echo $twig->render('register.html', ['title' => 'ToDo']);
             break;
         case 'projects':
 
@@ -90,7 +136,7 @@ if (isset($_GET['task'])) {
             $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/todo/projects/";
             header($redirect);
             exit;
-            
+
             break;
         case 'tasks':
 
@@ -98,7 +144,7 @@ if (isset($_GET['task'])) {
                 $_SESSION['project_id'] = $_POST['project_id'];
             }
             // Clean content
-            $tasks = NULL; 
+            $tasks = NULL;
 
             // Get data from database
             $result = $database->getAllTasksByProjectID($_SESSION['project_id']);
@@ -109,7 +155,7 @@ if (isset($_GET['task'])) {
             $table_tr_end = '</tr>';
             $i = 0;
 
-            if($result){
+            if ($result) {
                 while ($task = $result->fetch_assoc()) {
                     $tasks[] = $task;
                 }
@@ -233,25 +279,26 @@ if (isset($_GET['task'])) {
  * 
  */
 
-function formatTime($mins) {
+function formatTime($mins)
+{
     $str = "";
-    if(abs($mins) < 60){
+    if (abs($mins) < 60) {
         $str = strval(abs($mins)) . "min";
-    }else if(abs($mins) % 60 == 0){
-        $str = abs($mins)/60 .":00h";
-    }else{
+    } else if (abs($mins) % 60 == 0) {
+        $str = abs($mins) / 60 . ":00h";
+    } else {
         $hours = floor(abs($mins) / 60);
         $minutes = (abs($mins) % 60);
-        if($hours > 0){
+        if ($hours > 0) {
             $str .= strval($hours) . ":";
         }
-        if($minutes > 0){
-            $str .= sprintf('%02d',$minutes) . "h";
+        if ($minutes > 0) {
+            $str .= sprintf('%02d', $minutes) . "h";
         }
     }
-    if($mins<0){
-        return "-". $str;
-    }else{
+    if ($mins < 0) {
+        return "-" . $str;
+    } else {
         return $str;
     }
 }

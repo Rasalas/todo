@@ -56,6 +56,17 @@ class database
      * 
      * @return resutl|msqli_result
      */
+    public function checkUserLogin($email){
+        $sql = "SELECT id, admin, email, password, uuid FROM user WHERE email = '" . mysqli_real_escape_string($this->conn, $email)."'";
+        $result = $this->conn->query($sql);
+        return $result;
+    }
+
+    /**
+     * GET ALL tasks
+     * 
+     * @return resutl|msqli_result
+     */
     public function getAllTasks(){
         $sql = "SELECT * FROM
                 (SELECT * FROM task) t
