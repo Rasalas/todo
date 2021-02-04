@@ -45,10 +45,22 @@ if (isset($_GET['task'])) {
                 $data['title'] = 'ToDo';
                 if (isset($_SESSION['error'])) {
                     $data['error'] = $_SESSION['error'];
-                    $_SESSION['error'] = '';
+                    $_SESSION['error'] = ''; //TODO: unset?
                 }
                 echo $twig->render('login.html', $data);
             } else {
+                if (isset($_SERVER['HTTPS'])) {
+                    $protocol = ($_SERVER['HTTPS'] && $_SERVER['HTTPS'] != "off") ? "https" : "http";
+                } else {
+                    $protocol = 'http';
+                }
+
+                // if already logged in, going back in history ### doesn't seem to do anything - cached?
+                if (isset($_SESSION['angemeldet']) && $_SESSION['angemeldet']) {
+                    $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/todo/projects/";
+                    header($redirect);
+                }
+
                 // Get data from form
                 $form_result = $_POST;
 
@@ -62,30 +74,78 @@ if (isset($_GET['task'])) {
                     $_SESSION['uid'] = $user['id'];
                     $_SESSION['angemeldet'] = true;
 
-                    // Redirect projects
-                    if (isset($_SERVER['HTTPS'])) {
-                        $protocol = ($_SERVER['HTTPS'] && $_SERVER['HTTPS'] != "off") ? "https" : "http";
-                    } else {
-                        $protocol = 'http';
-                    }
-                    $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/todo/projects/";
+                    $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/todo/projects";
                     header($redirect);
-                } else {
+                } else { // error - back to login
                     $_SESSION['error'] = 'E-Mail oder Passwort falsch';
-                    // Redirect login
-                    if (isset($_SERVER['HTTPS'])) {
-                        $protocol = ($_SERVER['HTTPS'] && $_SERVER['HTTPS'] != "off") ? "https" : "http";
-                    } else {
-                        $protocol = 'http';
-                    }
-                    $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/todo/login/";
+
+                    $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/todo/login";
                     header($redirect);
                 }
             }
             break;
         case 'register':
-            
-            echo $twig->render('register.html', ['title' => 'ToDo']);
+            if (!isset($_GET['go'])) {
+                $data = array();
+                $data['title'] = 'ToDo';
+                if (isset($_SESSION['error'])) {
+                    $data['error'] = $_SESSION['error'];
+                    $_SESSION['error']='';
+                }
+                echo $twig->render('register.html', ['title' => 'ToDo']);
+            } else {
+                // for redirect
+                if (isset($_SERVER['HTTPS'])) {
+                    $protocol = ($_SERVER['HTTPS'] && $_SERVER['HTTPS'] != "off") ? "https" : "http";
+                } else {
+                    $protocol = 'http';
+                }
+
+                // get data from form
+                $form_result = $_POST;
+                $error = false;
+                $firstname = $form_result['firstname'];
+                $lastname = $form_result['lastname'];
+                $email = $form_result['email'];
+                $password = $form_result['password'];
+                $password_repeat = $form_result['password_repeat'];
+
+                /* if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                    $_SESSION['error'] .= 'Bitte eine gültige E-Mail-Adresse eingeben<br>';
+                    $error = true;
+                }
+                if (strlen($passwort) == 0) {
+                    $_SESSION['error'] .= 'Bitte ein Passwort eingeben<br>';
+                    $error = true;
+                }
+                if ($passwort != $passwort_repeat) {
+                    $_SESSION['error'] .= 'Die Passwörter müssen übereinstimmen<br>';
+                    $error = true;
+                } */
+
+                /* //Überprüfe, dass die E-Mail-Adresse noch nicht registriert wurde
+                if (!$error) {
+                    $result = $database->getUserByEmail($email);
+                    $user = $result->fetch_assoc();
+
+                    if ($user !== false) {
+                        $_SESSION['error'] .= 'Du hast bereits einen Account.<br>';
+                        $error = true;
+                    }
+                } */
+
+                if (!$error) {
+                    $password_hash = password_hash($password, PASSWORD_DEFAULT);
+
+                    $result = $database->createUser($firstname, $lastname, $email, $password_hash);
+                    
+                    $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/todo/login";
+                    header($redirect);
+                } else { // error - back to register
+                    $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/todo/register";
+                    header($redirect);
+                }
+            }
             break;
         case 'projects':
 

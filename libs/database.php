@@ -52,7 +52,7 @@ class database
     }
 
     /**
-     * GET ALL tasks
+     * GET user login information
      * 
      * @return resutl|msqli_result
      */
@@ -60,6 +60,44 @@ class database
         $sql = "SELECT id, admin, email, password, uuid FROM user WHERE email = '" . mysqli_real_escape_string($this->conn, $email)."'";
         $result = $this->conn->query($sql);
         return $result;
+    }
+
+    /**
+     * GET user login information
+     * 
+     * @return resutl|msqli_result
+     */
+    public function getUserByEmail($email){
+        $sql = "SELECT email FROM user WHERE email = '" . mysqli_real_escape_string($this->conn, $email)."'";
+        $result = $this->conn->query($sql);
+        return $result;
+    }
+
+    /**
+     * INSERT task
+     * 
+     * @return resutl|msqli_result
+     */
+    public function createUser($firstname, $lastname, $email, $password){
+        $sql = "INSERT INTO user (
+            `firstname`,
+            `lastname`,
+            `email`,
+            `password`
+            ) VALUES (
+            '" . mysqli_real_escape_string($this->conn, $firstname)."',
+            '" . mysqli_real_escape_string($this->conn, $lastname)."',
+            '" . mysqli_real_escape_string($this->conn, $email)."',
+            '" . mysqli_real_escape_string($this->conn, $password)."'
+            );
+        ";
+        echo $sql;
+        if (!$this->conn->query($sql)) {
+            echo 'Error MySQL: ' . $this->conn->error . '<br />';
+            return false;
+        } else {
+            return true;
+        }
     }
 
     /**
