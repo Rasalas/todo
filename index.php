@@ -45,7 +45,7 @@ if (isset($_GET['task'])) {
                 $data['title'] = 'ToDo';
                 if (isset($_SESSION['error'])) {
                     $data['error'] = $_SESSION['error'];
-                    unset($_SESSION['error']);
+                    $_SESSION['error'] = '';
                 }
                 echo $twig->render('login.html', $data);
             } else {
@@ -71,7 +71,6 @@ if (isset($_GET['task'])) {
                     $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/todo/projects/";
                     header($redirect);
                 } else {
-                    unset($_GET['go']);
                     $_SESSION['error'] = 'E-Mail oder Passwort falsch';
                     // Redirect login
                     if (isset($_SERVER['HTTPS'])) {
@@ -85,8 +84,8 @@ if (isset($_GET['task'])) {
             }
             break;
         case 'register':
-            echo 'Das hier ist eine leere Registrierungsseite :)';
-            //echo $twig->render('register.html', ['title' => 'ToDo']);
+            
+            echo $twig->render('register.html', ['title' => 'ToDo']);
             break;
         case 'projects':
 

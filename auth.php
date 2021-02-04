@@ -12,8 +12,8 @@ if (isset($_GET['task'])) {
 }
 
 // nicht angemeldet und nicht im login-prozess
-if (!isset($_SESSION['angemeldet']) || !$_SESSION['angemeldet'] || !isset($_SESSION['login_process']) || !$_SESSION['login_process'])  {
-      if ($task != 'login' && $task != 'register'){
+if (!isset($_SESSION['angemeldet']) || !$_SESSION['angemeldet'])  {
+      if (($task != 'login') && ($task != 'register')){
             header('Location: http://' . $hostname . ($path == '/' ? '' : $path) . '/login');
             exit;
       }
