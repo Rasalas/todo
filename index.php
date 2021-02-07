@@ -149,11 +149,14 @@ if (isset($_GET['task'])) {
             break;
         case 'projects':
 
+            // Get Data from Form
+            $form_result['uid'] = $_SESSION['uid'];
+
             // Clean content
             $page['content'] = '';
 
             // Get data from database
-            $result = $database->getAllProjects();
+            $result = $database->getProjectsByUserID($form_result);
 
             // All rows in array
             while ($project = $result->fetch_assoc()) {
@@ -237,6 +240,7 @@ if (isset($_GET['task'])) {
 
             // Get Data from Form
             $form_result = $_POST;
+            $form_result['uid'] = $_SESSION['uid'];
 
             // Create Kunden
             $database->createTask($form_result);

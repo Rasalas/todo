@@ -155,15 +155,29 @@ class database
     }
 
     /**
+     * GET Projects by ID
+     * 
+     * @return resutl|msqli_result
+     */
+    public function getProjectsByUserID($form_result){
+        $user_id = mysqli_real_escape_string($this->conn, $form_result['uid']);
+        $sql = "SELECT * FROM workgroup w, project p WHERE user_id=". $user_id ." GROUP BY p.id;";
+        $result = $this->conn->query($sql);
+        return $result;
+    }
+
+    
+    /**
      * INSERT task
      * 
      * @return resutl|msqli_result
      */
     public function createProject($form_result){
+        $project_text = mysqli_real_escape_string($this->conn, $form_result['project_text']);
         $sql = "INSERT INTO project (
             `name`
             ) VALUES (
-            '" . mysqli_real_escape_string($this->conn, $form_result['project_text'])."'
+            '". $project_text ."'
             );
         ";
 
@@ -183,10 +197,12 @@ class database
     public function createTask($form_result){
         $sql = "INSERT INTO task (
             `text`,
-            `project_id`
+            `project_id`,
+            `user_id`
             ) VALUES (
             '" . mysqli_real_escape_string($this->conn, $form_result['task_text'])."',
-            '" . mysqli_real_escape_string($this->conn, $form_result['project_id'])."'
+            '" . mysqli_real_escape_string($this->conn, $form_result['project_id'])."',
+            '" . mysqli_real_escape_string($this->conn, $form_result['uid'])."'
             );
         ";
 
