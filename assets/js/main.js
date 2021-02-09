@@ -51,17 +51,15 @@ $( document ).ready(function() {
     // todo checkbox click
     /** <input type="checkbox" name="test" value="bar" /> */
     $('input[name=todo]').change(function(){
-        if($('input[name=todo]').is(':checked')){
+        if($(this).is(':checked')){
                 //task-done
-                //alert('Checked'+$(this).attr("value"));
                 $link = "/todo/task-done/"+$(this).attr("value");
-                console.log($link)
+                //console.log($link)
                 window.location.href = $link;
             } else {
                 //task-undone
-                //alert('Not checked'+$(this).attr("value"));
                 $link = "/todo/task-undone/"+$(this).attr("value");
-                console.log($link)
+                //console.log($link)
                 window.location.href = $link;
             }
         });

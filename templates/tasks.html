@@ -49,7 +49,7 @@
               </div>
               <!-- /.card-header -->
               <div class="card-body">
-                <ul class="todo-list" data-widget="todo-list" >
+                <ul class="todo-list" id="my-todo-list" data-widget="todo-list" >
                   {% for task in tasks %}
                   <li>
                     <!-- drag handle -->
@@ -101,11 +101,11 @@
   $('#my-todo-list').TodoList({
   onCheck: function(checkbox) {
     // Do something when the checkbox is checked
-    alert(checkbox);
+    alert("test");
   },
   onUnCheck: function(checkbox) {
     // Do something after the checkbox has been unchecked
-    alert(checkbox);
+    alert("test");
   }
 })
   </script>

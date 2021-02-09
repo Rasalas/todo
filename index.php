@@ -148,6 +148,22 @@ if (isset($_GET['task'])) {
                 }
             }
             break;
+
+        case 'logout':
+            session_destroy();
+
+            $hostname = $_SERVER['HTTP_HOST'];
+            $path = dirname($_SERVER['PHP_SELF']);
+
+            //back to login
+            if (isset($_SERVER['HTTPS'])) {
+                $protocol = ($_SERVER['HTTPS'] && $_SERVER['HTTPS'] != "off") ? "https" : "http";
+            } else {
+                $protocol = 'http';
+            }
+            $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/todo/login";
+            header($redirect);
+            break;
         case 'projects':
 
             // Get Data from Form
