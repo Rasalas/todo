@@ -1,82 +1,111 @@
-<!doctype html>
-<html>
+{% include 'header.html' %}
+<div class="wrapper">
+  {% include 'menu.html' %}
 
-<head>
-    <meta charset="utf-8">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
-    <style>td:nth-child(2) { width: 50%; }</style>
-    <link rel="icon" href="wave.png" type="image/png">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <!--Let browser know website is optimized for mobile-->
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no user-scalable=no">
-    <title>{{ title }}</title>
-</head>
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>ToDo - Aufgaben</h1>
+          </div>
+          <!-- <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="#">Home</a></li>
+              <li class="breadcrumb-item active">Aufgaben</li>
+            </ol>
+          </div> -->
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
 
-<body>
-    <nav class="navbar fixed-top navbar-expand-lg justify-content-center">
-        <a class="navbar-brand" href="#">
-            <img src="" height="76px">
-            <!--logo-->
-        </a>
-    </nav>
-    <nav class="navbar justify-content-center title">
-        <h1>{{ title }}</h1>
-    </nav>
-    <div class="container px-5">
-        <table style="width:100%">
-            <tr>
-                <th>Erledigt</th>
-                <th>Text</th>
-                <th>Started @</th>
-                <th>Ended @</th>
-                <th>Duration</th>
-                <th></th>
-            </tr>
-                {% for task in tasks %}
-                <tr>
-                    <td>
-                        <form action="/todo/task-done" method="POST">
-                            <input type="hidden" id="task_id" name="task_id" value="{{ task.id }}">
-                            <input type="hidden" id="is_done" name="is_done" value="{{ task.is_done }}">
-                            <button type="submit"><i class="material-icons">{{ task.is_done == 1 ? "check_box" : "check_box_outline_blank" }}</i></button>
-                        </form>
-                    </td>
-                    <td>{{ task.text }}</td>
-                    <td>{{ task.started }}</td>
-                    <td>{{ task.ended }}</td>
-                    <td>{{ task.duration }}</td>
-                    <td>
-                        <form action="/todo/timer" method="POST">
-                            <input type="hidden" id="task_id" name="task_id" value="{{ task.id }}">
-                            <button type="submit"><i class="material-icons">timer</i></button>
-                        </form>
-                    </td>
-                </tr>
-                {% endfor %}
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td><hr><strong>Σ {{ sumduration }}</strong></td>
-                    <td></td>
-                </tr>
-        </table>
-    </div>
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <!-- left column -->
+          <div class="col-md-6">
+            <!-- general form elements -->
+            
+            <!-- TO DO List -->
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">
+                  <i class="ion ion-clipboard mr-1"></i>
+                  To Do List - <b>{{ sumduration }}</b>
+                </h3>
 
+                <div class="card-tools">
+                  <ul class="pagination pagination-sm">
+                    <li class="page-item"><a href="#" class="page-link">&laquo;</a></li>
+                    <li class="page-item"><a href="#" class="page-link">1</a></li>
+                    <li class="page-item"><a href="#" class="page-link">2</a></li>
+                    <li class="page-item"><a href="#" class="page-link">3</a></li>
+                    <li class="page-item"><a href="#" class="page-link">&raquo;</a></li>
+                  </ul>
+                </div>
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body">
+                <ul class="todo-list" data-widget="todo-list" >
+                  {% for task in tasks %}
+                  <li>
+                    <!-- drag handle -->
+                    <span class="handle">
+                    </span>
+                    <!-- checkbox -->
+                    <div  class="icheck-primary d-inline ml-2">
+                      <input type="checkbox" value="{{ task.id }}" name="todo" {{ task.is_done ? 'checked'}}>
+                      <label for="todoCheck1"></label>
+                    </div>
+                    <!-- todo text -->
+                    <span class="text">{{ task.text }}</span>
+                    <!-- Emphasis label -->
+                    {{ task.duration ? '<small class="badge badge-info"><i class="far fa-clock"></i>'|raw}} {{ task.duration ? task.duration}} {{task.duration ? '</small>'|raw}}
+                    
+                    <!-- General tools such as edit or delete-->
+                    <div class="tools">
+                      <span class="task-time" data-link="task-time/{{ task.id }}"><i class="far fa-clock"></i></span>
+                      <span class="task-edit" data-link="task-edit/{{ task.id }}"><i class="fas fa-edit"></i></span>
+                      <span class="task-delete" data-link="task-delete/{{ task.id }}"><i class="fa fa-trash"></i></span>
+                    </div>
+                  </li>
+                  {% endfor %}
+                </ul>
+              </div>
+              <!-- /.card-body --> 
+              <div class="card-footer clearfix">
+                  <a href="task-create"><button type="button" class="btn btn-info float-right"><i class="fas fa-plus"></i> Neue Aufgabe</button></a>
+              </div>
+            </div>
+            <!-- /.card -->
+            
+          </div>
+          <!--/.col (right) -->
+        </div>
+        <!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+  {% include 'footer.html' %}
+  <!-- Page specific script -->
+  <script>
+  $(function () {
+    bsCustomFileInput.init();
+  });
 
-    <script></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
-</body>
-<footer class="footer">
-    <div class="container px-5 mt-5" style="display:flex; justify-content:center;">
-        <form action="/todo/task-create" method="POST">
-            <input type="hidden" id="project_id" name="project_id" value="{{ project_id }}">
-            <input type="submit" id="create-task" type="button" value="Neue Aufgabe">
-        </form>
-    </div>
-</footer>
-
-</html>
+  $('#my-todo-list').TodoList({
+  onCheck: function(checkbox) {
+    // Do something when the checkbox is checked
+    alert(checkbox);
+  },
+  onUnCheck: function(checkbox) {
+    // Do something after the checkbox has been unchecked
+    alert(checkbox);
+  }
+})
+  </script>

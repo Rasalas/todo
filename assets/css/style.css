@@ -1,0 +1,85 @@
+
+/* Table */
+.table-toollinks {}
+.table-toollinks a { margin-right: 1rem; }
+
+#table-kunden thead tr th:last-child,
+#table-kunden .last { width: 3rem; }
+#table-hostessen thead tr th:last-child,
+#table-hostessen .last { width: 3rem; }
+#table-kunden_filter input,
+#table-hostessen_filter input,
+#table-hostessen-search_filter input { border: 1px solid #d2d6de; }
+
+.kunden-update,
+.kunden-confirmation,
+.hostessen-show,
+.hostessen-update,
+.einsatz-update,
+.einsatz-copy,
+.projekt-update,
+.projekt-view,
+.einsatz-personal,
+.einsatz-loeschen,
+.personal-loeschen,
+.projekt-loeschen,
+.bewerber-loeschen,
+.bewerber-update,
+.hostessen-confirmation { color: #555; cursor: pointer; }
+
+.kunden-update:hover,
+.kunden-confirmation:hover,
+.hostessen-show:hover,
+.hostessen-update:hover,
+.einsatz-update:hover,
+.einsatz-copy:hover,
+.projekt-update:hover,
+.projekt-view:hover,
+.einsatz-personal:hover,
+.einsatz-loeschen:hover,
+.personal-loeschen:hover,
+.projekt-loeschen:hover,
+.hostessen-confirmation:hover { color: #367fa9; }
+
+.kunden-update,
+.hostessen-update { margin-right: 1rem; }
+
+/* Hostessen Form */
+.form-links { display: inline-block; margin-left: 1rem; }
+.form-links a { margin-right: 1rem; color: #555; }
+.form-links a:hover { color: #367fa9; }
+.profilepic {}
+.profilepic label { display: block; }
+.profilepic img { width: auto; max-height: 333px;  }
+
+/* Menu */
+.sidebar a {cursor: pointer !important;}
+
+/* Hostessen Status */
+.inactive {background-color:orange !important;}
+.blocked {background-color:red !important;}
+.active {background-color:green !important;}
+.new {background-color:yellow !important;}
+.injob {background-color:grey !important;}
+.blue {background-color:lightblue !important;}
+.warning {background-color: #dc3545 !important;}
+.warning * {
+    color: #fff;
+}
+
+/* Einsatz Status */
+.red {background-color:red !important;}
+.orange {background-color:orange !important;}
+.green {background-color:green !important;}
+.yellow {background-color:yellow !important;}
+.grey {background-color:gray !important;}
+.blue {background-color:blue !important;}
+.tuerkis {background-color:#3f888f !important;}
+.darkred {background-color:#8A0808 !important;}
+.black {background-color:#000000 !important;}
+.lightgreen {background-color:#b4de70 !important;}
+
+/*Allgemeiner Stuff */
+#table-birthday_filter,
+#table-birthday_paginate {display: none;}
+

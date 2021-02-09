@@ -168,20 +168,32 @@ class database
 
     
     /**
-     * INSERT task
+     * INSERT project
      * 
      * @return resutl|msqli_result
      */
     public function createProject($form_result){
         $project_text = mysqli_real_escape_string($this->conn, $form_result['project_text']);
-        $sql = "INSERT INTO project (
+        $uid = mysqli_real_escape_string($this->conn, $form_result['uid']);
+         $sql = "INSERT INTO project (
             `name`
             ) VALUES (
             '". $project_text ."'
             );
         ";
+        $sql .= " INSERT INTO workgroup (
+            `user_id`, 
+            `project_id`, 
+            `is_admin`
+            ) VALUES (
+                ". $uid .", 
+                LAST_INSERT_ID(), 
+                1
+            );"; 
 
-        if (!$this->conn->query($sql)) {
+        //echo $sql;
+        
+        if (!$this->conn->multi_query($sql)) {
             echo 'Error MySQL: ' . $this->conn->error . '<br />';
             return false;
         } else {
@@ -241,7 +253,7 @@ class database
     public function updateToUndone($id){
         $sql = "UPDATE task SET 
                 is_done = 0, 
-                timestamp_done = 0
+                timestamp_done = NULL
                 WHERE id = '" . mysqli_real_escape_string($this->conn, $id) . "'";
 
         if (!$this->conn->query($sql)) {

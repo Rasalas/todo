@@ -1,0 +1,58 @@
+{include "header.html"}
+
+<div class="wrapper">
+
+    {include "menu.html"}
+
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>{$page.title_content}
+                <small style="display:none;">SUBTITLE</small>
+            </h1>
+        </section>
+
+        <!-- Main content -->
+
+        <section class="content">
+            <div class="box box-primary">
+
+            	<div class="box-header with-border">
+                        <h3 class="box-title">HEADline</h3>
+                    </div>
+
+                <div class="box-body">
+                  <table class="table table-bordered display" id="table-projektedash">
+                    <thead>
+                        <tr>
+                            <th>kommt</th>
+                            <th class="last">&nbsp;</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {$page.content}
+                    </tbody>
+                  </table>
+                </div>
+            </div>
+        </section>
+
+        <section class="content">
+            {$page.content}
+        </section>
+        <!-- /.content -->
+    </div>
+    <!-- /.content-wrapper -->
+    <footer class="main-footer">
+        <div class="pull-right hidden-xs">
+            <b>{$app.version}</div>
+        <strong>{$app.copyright}</strong>
+    </footer>
+
+    <!-- Add the sidebar's background. This div must be placed immediately after the control sidebar -->
+    <div class="control-sidebar-bg"></div>
+</div>
+<!-- ./wrapper -->
+
+{include "footer.html"}

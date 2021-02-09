@@ -1,45 +1,73 @@
-<!doctype html>
-<html>
+{% include 'header.html' %}
+<div class="wrapper">
+  {% include 'menu.html' %}
 
-<head>
-    <meta charset="utf-8">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
-    <style>td:nth-child(3) { width: 100%; }</style>
-    <link rel="icon" href="wave.png" type="image/png">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <!--Let browser know website is optimized for mobile-->
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no user-scalable=no">
-    <title>{{ title }}</title>
-</head>
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>ToDo - Aufgabe erstellen</h1>
+          </div>
+          <!-- <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="#">Home</a></li>
+              <li class="breadcrumb-item active">Aufgaben</li>
+            </ol>
+          </div> -->
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
 
-<body>
-    <nav class="navbar fixed-top navbar-expand-lg justify-content-center">
-        <a class="navbar-brand" href="#">
-            <img src="" height="76px">
-            <!--logo-->
-        </a>
-    </nav>
-    <nav class="navbar justify-content-center title">
-        <h1>{{ title }}</h1>
-    </nav>
-    <div class="container px-5">
-        <form action="task-insert" method="POST">
-            <div class="form-group">
-                <label for="task_text">Aufgabe</label>
-                <input type="hidden" id="project_id" name="project_id" value="{{ project_id }}">
-                <input type="text" class="form-control" id="task_text" name="task_text" placeholder="Fische füttern ...">
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-6">
+                
+              <div class="card card-primary">
+                <div class="card-header">
+                  <h3 class="card-title">Eingabe</h3>
+                </div>
+                <!-- /.card-header -->
+                <!-- form start -->
+                <form action="task-insert" method="POST">
+                  <input type="hidden" id="project_id" name="project_id" value="{{ project_id }}">
+                  <div class="card-body">
+                    <div class="form-group">
+                      <label for="exampleInputEmail1">Aufgabe</label>
+                      <input type="text" class="form-control" id="task_text" name="task_text" placeholder="Fische füttern ...">
+                    </div>
+                    <div class="form-group">
+                      <label for="exampleInputPassword1">Beschreibung</label>
+                      <input type="text" class="form-control" id="task_description" placeholder="Vorher überprüfen ob du welche hast ..." readonly>
+                    </div>
+                  </div>
+                  <!-- /.card-body -->
+  
+                  <div class="card-footer">
+                    <button type="submit" class="btn btn-primary">Speichern</button>
+                  </div>
+                </form>
+              </div>
+              <!-- /.card -->
+
             </div>
-            <button type="submit" class="btn btn-primary">Speichern</button>
-        </form>
-    </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+  {% include 'footer.html' %}
+  <!-- Page specific script -->
+  <script>
+  $(function () {
+    bsCustomFileInput.init();
+  });
+  </script>
 
-
-    <script></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
-</body>
-<footer class="footer">
-</footer>
-
-</html>

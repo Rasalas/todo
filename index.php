@@ -1,5 +1,6 @@
 <?php
 include('auth.php');
+$_SESSION['uid'] = 1;
 require 'libs/database.php';
 require 'config.php';
 require_once 'twig/vendor/autoload.php';
@@ -90,7 +91,7 @@ if (isset($_GET['task'])) {
                 $data['title'] = 'ToDo';
                 if (isset($_SESSION['error'])) {
                     $data['error'] = $_SESSION['error'];
-                    $_SESSION['error']='';
+                    $_SESSION['error'] = '';
                 }
                 echo $twig->render('register.html', ['title' => 'ToDo']);
             } else {
@@ -138,7 +139,7 @@ if (isset($_GET['task'])) {
                     $password_hash = password_hash($password, PASSWORD_DEFAULT);
 
                     $result = $database->createUser($firstname, $lastname, $email, $password_hash);
-                    
+
                     $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/todo/login";
                     header($redirect);
                 } else { // error - back to register
@@ -170,6 +171,7 @@ if (isset($_GET['task'])) {
             $data['page'] = $page;
 
             echo $twig->render('projects.html', [
+                'menu' => ['projects_top' => 1, 'projects_overview' => 1],
                 'projects' => $projects,
                 'title' => 'ToDo'
             ]);
@@ -177,7 +179,9 @@ if (isset($_GET['task'])) {
             break;
         case 'project-create':
 
-            echo $twig->render('project_form.html', []);
+            echo $twig->render('project_form.html', [
+                'menu' => ['projects_top' => 1, 'project_create' => 1]
+            ]);
 
             break;
 
@@ -185,6 +189,7 @@ if (isset($_GET['task'])) {
 
             // Get Data from Form
             $form_result = $_POST;
+            $form_result['uid'] = $_SESSION['uid'];
 
             // Create Kunden
             $database->createProject($form_result);
@@ -195,7 +200,7 @@ if (isset($_GET['task'])) {
             } else {
                 $protocol = 'http';
             }
-            $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/todo/projects/";
+            $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/todo/projects";
             header($redirect);
             exit;
 
@@ -223,18 +228,28 @@ if (isset($_GET['task'])) {
                 }
                 $result->fetch_array();
             }
-
-            echo $twig->render('tasks.html', [
+            $test = array();
+            $test = [
+                'session' => $_SESSION,
                 'tasks' => $tasks,
+                'menu' => ['tasks_top' => 1, 'tasks_overview' => 1],
                 'project_id' => $_SESSION['project_id'],
                 'sumduration' => formatTime($sum_duration),
                 'title' => 'ToDo'
-            ]);
+            ];
+            if (isset($_SESSION['active_wt_insert_id'])) {
+                $test['active_wt_insert_id'] = $_SESSION['active_wt_insert_id'];
+            }
+            echo $twig->render('tasks.html', $test);
 
             break;
 
         case 'task-create':
-            echo $twig->render('todo_form.html', ['project_id' => $_SESSION['project_id']]);
+
+            echo $twig->render('todo_form.html', [
+                'menu' => ['tasks_create' => 1],
+                'project_id' => $_SESSION['project_id']
+            ]);
             break;
         case 'task-insert':
 
@@ -251,7 +266,7 @@ if (isset($_GET['task'])) {
             } else {
                 $protocol = 'http';
             }
-            $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/todo/tasks/";
+            $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/todo/tasks";
             header($redirect);
             exit;
 
@@ -259,52 +274,76 @@ if (isset($_GET['task'])) {
 
         case 'task-done':
 
-            // Get Data from Form
-            $form_result = $_POST;
+            // Get ID from TaskData
+            $task_id = $taskData;
 
-            if (isset($_POST['task_id'])) {
-                if ($_POST['is_done'] == 0) {
-                    $database->updateToDone($_POST['task_id']);
-                } else {
-                    $database->updateToUndone($_POST['task_id']);
-                }
+            $database->updateToDone($task_id);
 
-                // Redirect Kunden-Liste
-                if (isset($_SERVER['HTTPS'])) {
-                    $protocol = ($_SERVER['HTTPS'] && $_SERVER['HTTPS'] != "off") ? "https" : "http";
-                } else {
-                    $protocol = 'http';
-                }
-                $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/todo/tasks/";
-                header($redirect);
-                exit;
+            // Redirect Kunden-Liste
+            if (isset($_SERVER['HTTPS'])) {
+                $protocol = ($_SERVER['HTTPS'] && $_SERVER['HTTPS'] != "off") ? "https" : "http";
             } else {
-                echo "Task nicht gefunden!";
+                $protocol = 'http';
             }
+            $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/todo/tasks";
+            header($redirect);
+            exit;
+
+        case 'task-undone':
+
+            // Get ID from TaskData
+            $task_id = $taskData;
+
+            $database->updateToUndone($task_id);
+
+            // Redirect Kunden-Liste
+            if (isset($_SERVER['HTTPS'])) {
+                $protocol = ($_SERVER['HTTPS'] && $_SERVER['HTTPS'] != "off") ? "https" : "http";
+            } else {
+                $protocol = 'http';
+            }
+            $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/todo/tasks";
+            header($redirect);
+            exit;
 
             break;
-
-        case 'timer':
-
-            // get data from form
-            $form_result = $_POST;
-
-            // start timer
+        case 'task-edit':
+            /* /// get data from form
+            $form_result['task_id'] = 42;
             $insert_id = $database->createWorktime($form_result);
 
+            $form_result['task_id'] = 42;
+            $form_result['insert_id'] = $insert_id;
+            // stop timer
+            $database->stopWorktime($form_result); */
+            break;
+        case 'task-time':
+            // Get ID from TaskData
+            $task_id = $taskData;
 
-            echo $twig->render('timer_form.html', [
-                'task_id' => $form_result['task_id'],
-                'insert_id' => $insert_id,
-                'title' => 'ToDo'
-            ]);
+            /// get data from form
+            $form_result['task_id'] = $task_id;
+
+            // start timer
+            $_SESSION['active_wt_insert_id'] = $database->createWorktime($form_result);
+
+
+            // Redirect Kunden-Liste
+            if (isset($_SERVER['HTTPS'])) {
+                $protocol = ($_SERVER['HTTPS'] && $_SERVER['HTTPS'] != "off") ? "https" : "http";
+            } else {
+                $protocol = 'http';
+            }
+            $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/todo/tasks";
+            header($redirect);
 
             break;
 
         case 'timer-stop':
 
-            // get data from form
-            $form_result = $_POST;
+            // get data from Session
+            $form_result['insert_id'] = $_SESSION['active_wt_insert_id'];
+            unset($_SESSION['active_wt_insert_id']);
 
             // stop timer
             $database->stopWorktime($form_result);
@@ -315,7 +354,7 @@ if (isset($_GET['task'])) {
             } else {
                 $protocol = 'http';
             }
-            $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/todo/tasks/";
+            $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/todo/tasks";
             header($redirect);
 
         case 'test':
