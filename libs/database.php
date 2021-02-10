@@ -135,34 +135,6 @@ class database
     }
 
     /**
-     * GET ALL tasks by project_id
-     * 
-     * @return resutl|msqli_result
-     */
-    public function getAllTasksByProjectID($id)
-    {
-        $sql = "SELECT * FROM
-                (SELECT id, project_id, `text`, is_done FROM task WHERE (timestamp_done >=(NOW()-INTERVAL 1 DAY) OR timestamp_done IS NULL) AND `project_id`= '" . mysqli_real_escape_string($this->conn, $id) . "') t
-                LEFT JOIN ( SELECT task_id, SUM(TIMESTAMPDIFF(MINUTE, start_time, end_time)) AS 'duration', MIN(start_time) AS 'started', MAX(end_time) AS 'ended' FROM worktime GROUP BY task_id) w
-                ON t.id = task_id";
-        $result = $this->conn->query($sql);
-        return $result;
-    }
-
-    /**
-     * GET task by task_id
-     * 
-     * @return resutl|msqli_result
-     */
-    public function getTaskByID($form_result)
-    {
-        $task_id = mysqli_real_escape_string($this->conn, $form_result['task_id']);
-        $sql = "SELECT * FROM task WHERE id = " . $task_id . ";";
-        $result = $this->conn->query($sql);
-        return $result;
-    }
-
-    /**
      * GET ALL Projects
      * 
      * @return resutl|msqli_result
@@ -223,6 +195,34 @@ class database
     }
 
     /**
+     * GET ALL tasks by project_id
+     * 
+     * @return resutl|msqli_result
+     */
+    public function getAllTasksByProjectID($id)
+    {
+        $sql = "SELECT * FROM
+                (SELECT id, project_id, `text`, is_done FROM task WHERE (timestamp_done >=(NOW()-INTERVAL 1 DAY) OR timestamp_done IS NULL) AND `project_id`= '" . mysqli_real_escape_string($this->conn, $id) . "') t
+                LEFT JOIN ( SELECT task_id, SUM(TIMESTAMPDIFF(MINUTE, start_time, end_time)) AS 'duration', MIN(start_time) AS 'started', MAX(end_time) AS 'ended' FROM worktime GROUP BY task_id) w
+                ON t.id = task_id";
+        $result = $this->conn->query($sql);
+        return $result;
+    }
+
+    /**
+     * GET task by task_id
+     * 
+     * @return resutl|msqli_result
+     */
+    public function getTaskByID($form_result)
+    {
+        $task_id = mysqli_real_escape_string($this->conn, $form_result['task_id']);
+        $sql = "SELECT * FROM task WHERE id = " . $task_id . ";";
+        $result = $this->conn->query($sql);
+        return $result;
+    }
+
+    /**
      * INSERT task
      * 
      * @return resutl|msqli_result
@@ -231,10 +231,12 @@ class database
     {
         $sql = "INSERT INTO task (
             `text`,
+            `description`,
             `project_id`,
             `user_id`
             ) VALUES (
             '" . mysqli_real_escape_string($this->conn, $form_result['task_text']) . "',
+            '" . mysqli_real_escape_string($this->conn, $form_result['task_description']) . "',
             '" . mysqli_real_escape_string($this->conn, $form_result['project_id']) . "',
             '" . mysqli_real_escape_string($this->conn, $form_result['uid']) . "'
             );

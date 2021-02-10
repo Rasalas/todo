@@ -269,10 +269,18 @@ if (isset($_GET['task'])) {
 
         case 'task-create':
 
+            $page = array();
+            $page['title_header'] = $app_title . ' | Task erstellen';
+            $page['title_content'] = 'Task erstellen';
+            $page['button_save_title'] = 'Task speichern';
+            $page['button_save_link'] = 'task-insert';
+
             echo $twig->render('task_form.html', [
+                'page' => $page,
                 'menu' => ['tasks_create' => 1],
                 'project_id' => $_SESSION['project_id']
             ]);
+            
             break;
         case 'task-insert':
 
@@ -371,7 +379,7 @@ if (isset($_GET['task'])) {
 
             while ($row = $result->fetch_assoc()) {
                 $task['text'] = $row['text'];
-                //$task['description'] = htmlentities($row['description']);
+                $task['description'] = htmlentities($row['description']);
             } 
 
             echo $twig->render('task_form.html', [
