@@ -1,3 +1,58 @@
+/* Login & Register */
+
+.login-page, .register-page {
+    display: flex;           /* establish flex container */
+    flex-direction: column;  /* make main axis vertical */
+    justify-content: center; /* center items vertically, in this case */
+    align-items: center;     /* center items horizontally, in this case */
+    height: 300px
+}
+
+.login-box, .register-box {
+    width: 300px;
+    margin: 5px;
+}
+
+.login-card-body, .register-card-body {
+    border-top: 0;
+    color: #666;
+    padding: 20px;
+    .input-group {: ;
+    .form-control {: ;
+    border-right: 0;
+    &: focus {;
+    box-shadow: none;
+    & ~ .input-group-append .input-group-text {: ;
+    border-color: $input-focus-border-color;
+    }: ;
+    }: ;
+    &.is-valid {: ;
+    &: focus {;
+    box-shadow: none;
+    }: ;
+    & ~ .input-group-append .input-group-text {: ;
+    border-color: $success;
+    }: ;
+    }: ;
+    &.is-invalid {: ;
+    &: focus {;
+    box-shadow: none;
+    }: ;
+    & ~ .input-group-append .input-group-text {: ;
+    border-color: $danger;
+    }: ;
+    }: ;
+    }: ;
+    .input-group-text {: ;
+    background-color: transparent;
+    border-bottom-right-radius: $border-radius;
+    border-left: 0;
+    border-top-right-radius: $border-radius;
+    color: #777;
+    transition: $input-transition;
+    }: ;
+    }: ;
+}
 
 /* Table */
 .table-toollinks {}

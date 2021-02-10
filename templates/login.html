@@ -1,28 +1,63 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{{ title }} | Log in</title>
-
+  <title>AdminLTE 3 | General Form Elements</title>
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
   <!-- Font Awesome -->
-  <link rel="stylesheet" href="../../plugins/fontawesome-free/css/all.min.css">
-  <!-- icheck bootstrap -->
-  <link rel="stylesheet" href="../../plugins/icheck-bootstrap/icheck-bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="admin-lte/plugins/fontawesome-free/css/all.min.css">
+  <link rel="stylesheet" type="text/css" href="admin-lte/plugins/fontawesome-free/css/fontawesome.css">
+  <link rel="stylesheet" type="text/css" href="admin-lte/plugins/fontawesome-free/css/brands.css">
+  <link rel="stylesheet" type="text/css" href="admin-lte/plugins/fontawesome-free/css/solid.css">
+  
+  <!-- Ionicons -->
+  <link rel="stylesheet" type="text/css" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
   <!-- Theme style -->
-  <link rel="stylesheet" href="../../dist/css/adminlte.min.css">
+  <link rel="stylesheet" type="text/css" href="admin-lte/dist/css/adminlte.min.css">
+
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+  <!-- Bootstrap 3.3.7 -->
+  <link rel="stylesheet" type="text/css" href="admin-lte/node_modules/bootstrap/dist/css/bootstrap.min.css">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" type="text/css" href="admin-lte/node_modules/font-awesome/css/font-awesome.min.css">
+  <!-- Ionicons -->
+  <link rel="stylesheet" type="text/css" href="admin-lte/node_modules/Ionicons/css/ionicons.min.css">
+  <!-- daterange picker -->
+  <link rel="stylesheet" type="text/css" href="admin-lte/node_modules/bootstrap-daterangepicker/daterangepicker.css">
+  <!-- bootstrap datepicker -->
+  <link rel="stylesheet" type="text/css" href="admin-lte/node_modules/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css">
+  <!-- iCheck for checkboxes and radio inputs -->
+  <link rel="stylesheet" type="text/css" href="admin-lte/plugins/iCheck/all.css">
+  <!-- iCheck -->
+<!--   <link rel="stylesheet" type="text/css" href="admin-lte/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
+ -->  <!-- Bootstrap Color Picker -->
+  <link rel="stylesheet" type="text/css" href="admin-lte/node_modules/bootstrap-colorpicker/dist/css/bootstrap-colorpicker.min.css">
+  <!-- Bootstrap time Picker -->
+  <link rel="stylesheet" type="text/css" href="admin-lte/plugins/timepicker/bootstrap-timepicker.min.css">
+  <!-- Select2 -->
+  <link rel="stylesheet" type="text/css" href="admin-lte/node_modules/select2/dist/css/select2.min.css">
+  <!-- bootstrap wysihtml5 - text editor -->
+  <link rel="stylesheet" type="text/css" href="admin-lte/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
+  <!-- CK Editor -->
+  <script src="admin-lte/node_modules/ckeditor/ckeditor.js"></script>
+  <!-- Theme style -->
+  <link rel="stylesheet" type="text/css" href="admin-lte/dist/css/adminlte.min.css">
+  <link rel="stylesheet" type="text/css" href="admin-lte/dist/css/skins/_all-skins.min.css">
+  <link rel="stylesheet" type="text/css" href="assets/css/style.css">
+  <link rel="stylesheet" type="text/css" href="admin-lte/build/scss/pages/_login_and_register.scss">
 </head>
 <body class="hold-transition login-page">
 <div class="login-box">
   <div class="login-logo">
-    {{ title }}
+    Login
   </div>
   <!-- /.login-logo -->
   <div class="card">
     <div class="card-body login-card-body">
-      <p class="login-box-msg">Einloggen zum Loslegen :)</p>
+      <p class="login-box-msg">{{ title }}</p>
       <div class="error-msg">{{ error }}</div>
       <form action="/todo/login?go" method="post">
         <div class="input-group mb-3">
@@ -76,5 +111,6 @@
 <script src="../../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 <!-- AdminLTE App -->
 <script src="../../dist/js/adminlte.min.js"></script>
+
 </body>
 </html>
