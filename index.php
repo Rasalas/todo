@@ -165,10 +165,10 @@ if (isset($_GET['task'])) {
             break;
         case 'projects':
             echo $_SESSION['uid'] . '<br>';
-            
+
             // Get Data from Form
             $form_result['uid'] = $_SESSION['uid'];
-            
+
             // Clean content
             $page['content'] = '';
 
@@ -262,7 +262,7 @@ if (isset($_GET['task'])) {
 
         case 'task-create':
 
-            echo $twig->render('todo_form.html', [
+            echo $twig->render('task_form.html', [
                 'menu' => ['tasks_create' => 1],
                 'project_id' => $_SESSION['project_id']
             ]);
@@ -323,15 +323,33 @@ if (isset($_GET['task'])) {
             exit;
 
             break;
-        case 'task-edit':
-            /* /// get data from form
-            $form_result['task_id'] = 42;
-            $insert_id = $database->createWorktime($form_result);
 
-            $form_result['task_id'] = 42;
-            $form_result['insert_id'] = $insert_id;
-            // stop timer
-            $database->stopWorktime($form_result); */
+        case 'task-delete':
+
+            // Get ID from TaskData
+            $form_result['task_id'] = $taskData;
+
+            $database->deleteByTaskID($form_result);
+
+            // Redirect Kunden-Liste
+            if (isset($_SERVER['HTTPS'])) {
+                $protocol = ($_SERVER['HTTPS'] && $_SERVER['HTTPS'] != "off") ? "https" : "http";
+            } else {
+                $protocol = 'http';
+            }
+            $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/todo/tasks";
+            header($redirect);
+            exit;
+
+            break;
+        case 'task-edit':
+
+            echo $twig->render('task_form.html', [
+                '' => '',
+                'menu' => ['tasks_create' => 1],
+                'project_id' => $_SESSION['project_id']
+            ]);
+
             break;
         case 'task-time':
             // Get ID from TaskData
