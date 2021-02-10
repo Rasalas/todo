@@ -1,6 +1,5 @@
 <?php
 session_start();
-require_once 'twig/vendor/autoload.php';
 
 $hostname = $_SERVER['HTTP_HOST'];
 $path = dirname($_SERVER['PHP_SELF']);
