@@ -8,6 +8,10 @@ require_once 'twig/vendor/autoload.php';
 $loader = new \Twig\Loader\FilesystemLoader('templates');
 $twig = new \Twig\Environment($loader);
 
+$app_title = 'ToDo';
+$app['version'] = '1.0.0';
+$app['copyright'] = 'Copyright &copy; ' . date('Y') . ' Torben Buck';
+
 // Setup Database
 $database = new database($config["servername"], $config["username"], $config["password"], $config["dbname"]);
 
@@ -347,8 +351,14 @@ if (isset($_GET['task'])) {
             break;
         case 'task-edit':
 
-            /* // Get ID from TaskData
+            // Get ID from TaskData
             $task_id = $taskData;
+
+            $page = array();
+            $page['title_header'] = $app_title . ' | Task ändern';
+            $page['title_content'] = 'Task ändern';
+            $page['button_save_title'] = 'Task speichern';
+            $page['button_save_link'] = 'task-update/' . $task_id . '/';
                     
             /// get data from form
             $form_result['task_id'] = $task_id;
@@ -362,14 +372,37 @@ if (isset($_GET['task'])) {
             while ($row = $result->fetch_assoc()) {
                 $task['text'] = $row['text'];
                 //$task['description'] = htmlentities($row['description']);
-            }  */
+            } 
 
-            /* echo $twig->render('task_form.html', [
-                'task_text' => $task,
+            echo $twig->render('task_form.html', [
+                'page' => $page,
+                'data' => $task,
                 'menu' => ['tasks_top' => 1,],
                 'task_id' => $form_result['task_id']
-            ]); */
-            echo $twig->render('task_form.html');
+            ]);
+
+            break;
+        
+        case 'task-update':
+
+            // Get ID from TaskData
+            $id = $taskData;
+
+            // Get Data from Form
+            $form_result = $_POST;
+
+            // Create Unterkunft
+            $database->updateTask($id, $form_result);
+
+            // Redirect Unterkunft-Liste
+            if (isset($_SERVER['HTTPS'])) {
+                $protocol = ($_SERVER['HTTPS'] && $_SERVER['HTTPS'] != "off") ? "https" : "http";
+            } else {
+                $protocol = 'http';
+            }
+            $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/todo/tasks/";
+            header($redirect);
+            exit;
 
             break;
         case 'task-time':

@@ -249,6 +249,29 @@ class database
     }
 
     /**
+     * Update task
+     *
+     * @return boolean|mysqli_result
+     */
+    public function updateTask($id, $form_result)
+    {
+        $sql = "UPDATE `task` SET
+                `text` =  '" . mysqli_real_escape_string($this->conn, $form_result['task_text']) . "',
+                `description` =  '" . mysqli_real_escape_string($this->conn, $form_result['task_description']) . "'
+                WHERE 
+                id = '" . mysqli_real_escape_string($this->conn, $id) . "'
+        ;";
+        #echo $sql;
+
+        if (!$this->conn->query($sql)) {
+            echo 'Error MySQL: ' . $this->conn->error . '<br />';
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    /**
      * UPDATE task done
      * 
      * @return resutl|msqli_result

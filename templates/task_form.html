@@ -9,7 +9,7 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>ToDo - Aufgabe erstellen</h1>
+            <h1>{{ page.title_header }}</h1>
           </div>
           <!-- <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
@@ -29,26 +29,26 @@
                 
               <div class="card card-primary">
                 <div class="card-header">
-                  <h3 class="card-title">Eingabe</h3>
+                  <h3 class="card-title">{{ page.title_content }}</h3>
                 </div>
                 <!-- /.card-header -->
                 <!-- form start -->
-                <form action="task-insert" method="POST">
+                <form action="{{ page.button_save_link }}" method="POST">
                   <input type="hidden" id="project_id" name="project_id" value="{{ project_id }}">
                   <div class="card-body">
                     <div class="form-group">
                       <label for="exampleInputEmail1">Aufgabe</label>
-                      <input type="text" class="form-control" id="task_text" name="task_text" placeholder="Fische füttern ...">
+                      <input type="text" class="form-control" id="task_text" name="task_text" value="{{ data.text }}" placeholder="Fische füttern ...">
                     </div>
                     <div class="form-group">
                       <label for="exampleInputPassword1">Beschreibung</label>
-                      <input type="text" class="form-control" id="task_description" placeholder="Vorher überprüfen ob du welche hast ..." readonly>
+                      <input type="text" class="form-control" id="task_description" name="task_description" value="{{ data.description }}" placeholder="Vorher überprüfen ob du welche hast ..." readonly>
                     </div>
                   </div>
                   <!-- /.card-body -->
   
                   <div class="card-footer">
-                    <button type="submit" class="btn btn-primary">Speichern</button>
+                    <button type="submit" class="btn btn-primary">{{ page.button_save_title }}</button>
                   </div>
                 </form>
               </div>
