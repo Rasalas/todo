@@ -33,8 +33,8 @@
                   <div class="info-box-content">
                     <span class="info-box-text"><b>{{ project.name }}</b></span>
                     <span class="info-box-number"><form action="/todo/tasks" method="POST">
-                        <input type="hidden" id="project_id" name="project_id" value="{{ project.id }}">
-                        <button class="py-2 my-2" type="submit" style="width:100%; height:100%;">ÖFFNEN</button>
+                        <input type="hidden" id="project_id{{ project.id }}" name="project_id" value="{{ project.id }}">
+                        <button class="py-2 my-2 btn btn-info" type="submit" style="width:100%; height:100%;">ÖFFNEN</button>
                     </form></span>
                   </div>
                   <!-- /.info-box-content -->

@@ -94,7 +94,7 @@ class database
             '" . mysqli_real_escape_string($this->conn, $password) . "'
             );
         ";
-        echo $sql;
+        #echo $sql;
         if (!$this->conn->query($sql)) {
             echo 'Error MySQL: ' . $this->conn->error . '<br />';
             return false;
@@ -145,6 +145,19 @@ class database
                 (SELECT id, project_id, `text`, is_done FROM task WHERE (timestamp_done >=(NOW()-INTERVAL 1 DAY) OR timestamp_done IS NULL) AND `project_id`= '" . mysqli_real_escape_string($this->conn, $id) . "') t
                 LEFT JOIN ( SELECT task_id, SUM(TIMESTAMPDIFF(MINUTE, start_time, end_time)) AS 'duration', MIN(start_time) AS 'started', MAX(end_time) AS 'ended' FROM worktime GROUP BY task_id) w
                 ON t.id = task_id";
+        $result = $this->conn->query($sql);
+        return $result;
+    }
+
+    /**
+     * GET task by task_id
+     * 
+     * @return resutl|msqli_result
+     */
+    public function getTaskByID($form_result)
+    {
+        $task_id = mysqli_real_escape_string($this->conn, $form_result['task_id']);
+        $sql = "SELECT * FROM task WHERE id = " . $task_id . ";";
         $result = $this->conn->query($sql);
         return $result;
     }

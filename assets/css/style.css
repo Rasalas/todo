@@ -1,5 +1,9 @@
-/* Login & Register */
 
+#timer, .right {
+    float: right;
+}
+
+/* Login & Register */
 .login-page, .register-page {
     display: flex;           /* establish flex container */
     flex-direction: column;  /* make main axis vertical */
@@ -12,7 +16,7 @@
     width: 300px;
     margin: 5px;
 }
-
+/* 
 .login-card-body, .register-card-body {
     border-top: 0;
     color: #666;
@@ -52,7 +56,7 @@
     transition: $input-transition;
     }: ;
     }: ;
-}
+} */
 
 /* Table */
 .table-toollinks {}

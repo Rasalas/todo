@@ -1,5 +1,7 @@
 <?php
 include('auth.php');
+//$_SESSION['angemeldet'] = true;
+//$_SESSION['uid'] = 1;
 require 'libs/database.php';
 require 'config.php';
 require_once 'twig/vendor/autoload.php';
@@ -14,6 +16,7 @@ if (isset($_GET['task'])) {
     $urlTask = $_GET['task'];
     if ($urlTask) {
         $urlCutter = explode("/", $urlTask);
+        if($urlCutter[0] == "") array_shift($urlCutter);
         switch (count($urlCutter)) {
             case 1:
                 $task = $urlCutter[0];
@@ -344,11 +347,29 @@ if (isset($_GET['task'])) {
             break;
         case 'task-edit':
 
-            echo $twig->render('task_form.html', [
-                '' => '',
-                'menu' => ['tasks_create' => 1],
-                'project_id' => $_SESSION['project_id']
-            ]);
+            /* // Get ID from TaskData
+            $task_id = $taskData;
+                    
+            /// get data from form
+            $form_result['task_id'] = $task_id;
+
+            // Get task from database
+            $result = $database->getTaskByID($form_result);
+
+            // Create Array
+            $task = array();
+
+            while ($row = $result->fetch_assoc()) {
+                $task['text'] = $row['text'];
+                //$task['description'] = htmlentities($row['description']);
+            }  */
+
+            /* echo $twig->render('task_form.html', [
+                'task_text' => $task,
+                'menu' => ['tasks_top' => 1,],
+                'task_id' => $form_result['task_id']
+            ]); */
+            echo $twig->render('task_form.html');
 
             break;
         case 'task-time':
@@ -360,7 +381,9 @@ if (isset($_GET['task'])) {
 
             // start timer
             $_SESSION['active_wt_insert_id'] = $database->createWorktime($form_result);
-
+            if(isset($_SESSION['active_wt_insert_id'])){
+                $_SESSION['active_wt_start_time'] = round(microtime(true) * 1000);
+            }
 
             // Redirect Kunden-Liste
             if (isset($_SERVER['HTTPS'])) {
@@ -378,6 +401,7 @@ if (isset($_GET['task'])) {
             // get data from Session
             $form_result['insert_id'] = $_SESSION['active_wt_insert_id'];
             unset($_SESSION['active_wt_insert_id']);
+            unset($_SESSION['active_wt_start_time']);
 
             // stop timer
             $database->stopWorktime($form_result);
@@ -410,12 +434,17 @@ if (isset($_GET['task'])) {
     header($redirect);
 }
 
+if(isset($_SESSION['active_wt_start_time'])){
+    echo '<script> getTimer('. $_SESSION['active_wt_start_time']  .') </script>';
+}
+
+
 /**
  * FUNKTIONEN: Auszulagern
  * 
  */
 
-function formatTime($mins)
+function formatTime($mins) // for task time
 {
     $str = "";
     if (abs($mins) < 60) {
@@ -438,6 +467,3 @@ function formatTime($mins)
         return $str;
     }
 }
-//Übergangsweise:
-//header("Location: project-view.php"); // TODO: Log-in
-//exit();

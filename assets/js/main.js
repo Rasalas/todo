@@ -1,3 +1,36 @@
+function getTimer(startTime){
+
+    putTimer(startTime) // immediate update
+    var x = setInterval(function(){
+        putTimer(startTime)
+    },1000); 
+}
+
+function putTimer(startTime){
+    var now = new Date().getTime();
+
+    var duration = now - startTime;
+
+    // Time calculations for days, hours, minutes and seconds
+    var days = Math.floor(duration / (1000 * 60 * 60 * 24));
+    var hours = Math.floor((duration % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    var minutes = Math.floor((duration % (1000 * 60 * 60)) / (1000 * 60));
+    var seconds = Math.floor((duration % (1000 * 60)) / 1000);
+
+    var timestring = '';
+    timestring += days != 0 ? days + 'd ' : ''
+    timestring += leadingZeros(hours, 2) + ':'
+    timestring += leadingZeros(minutes, 2) + ':' 
+    timestring += leadingZeros(seconds, 2)
+
+    document.getElementById('timer').innerHTML = timestring //days + "d " + hours + "h " + leadingZeros(minutes,2) + "m " + leadingZeros(seconds,2) + "s ";
+}
+
+function leadingZeros(number, count){
+    if(count<number.toString().length) throw new Error("Number longer than count")
+    return ("0".repeat(count) + number).slice(-count)
+}
+
 $( document ).ready(function() {
 
 
@@ -54,15 +87,15 @@ $( document ).ready(function() {
         if($(this).is(':checked')){
                 //task-done
                 $link = "/todo/task-done/"+$(this).attr("value");
-                //console.log($link)
                 window.location.href = $link;
             } else {
                 //task-undone
                 $link = "/todo/task-undone/"+$(this).attr("value");
-                //console.log($link)
                 window.location.href = $link;
             }
         });
+
+    
     
 /** ##################### BEISPIELE ##################### */
     // Remove Button Hostessen
