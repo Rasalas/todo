@@ -56,8 +56,9 @@ class database
      * 
      * @return resutl|msqli_result
      */
-    public function checkUserLogin($email){
-        $sql = "SELECT id, admin, email, password, uuid FROM user WHERE email = '" . mysqli_real_escape_string($this->conn, $email)."'";
+    public function checkUserLogin($email)
+    {
+        $sql = "SELECT id, admin, email, password, uuid FROM user WHERE email = '" . mysqli_real_escape_string($this->conn, $email) . "'";
         $result = $this->conn->query($sql);
         return $result;
     }
@@ -67,8 +68,9 @@ class database
      * 
      * @return resutl|msqli_result
      */
-    public function getUserByEmail($email){
-        $sql = "SELECT email FROM user WHERE email = '" . mysqli_real_escape_string($this->conn, $email)."'";
+    public function getUserByEmail($email)
+    {
+        $sql = "SELECT email FROM user WHERE email = '" . mysqli_real_escape_string($this->conn, $email) . "'";
         $result = $this->conn->query($sql);
         return $result;
     }
@@ -78,17 +80,18 @@ class database
      * 
      * @return resutl|msqli_result
      */
-    public function createUser($firstname, $lastname, $email, $password){
+    public function createUser($firstname, $lastname, $email, $password)
+    {
         $sql = "INSERT INTO user (
             `firstname`,
             `lastname`,
             `email`,
             `password`
             ) VALUES (
-            '" . mysqli_real_escape_string($this->conn, $firstname)."',
-            '" . mysqli_real_escape_string($this->conn, $lastname)."',
-            '" . mysqli_real_escape_string($this->conn, $email)."',
-            '" . mysqli_real_escape_string($this->conn, $password)."'
+            '" . mysqli_real_escape_string($this->conn, $firstname) . "',
+            '" . mysqli_real_escape_string($this->conn, $lastname) . "',
+            '" . mysqli_real_escape_string($this->conn, $email) . "',
+            '" . mysqli_real_escape_string($this->conn, $password) . "'
             );
         ";
         echo $sql;
@@ -105,7 +108,8 @@ class database
      * 
      * @return resutl|msqli_result
      */
-    public function getAllTasks(){
+    public function getAllTasks()
+    {
         $sql = "SELECT * FROM
                 (SELECT * FROM task) t
                 LEFT JOIN ( SELECT task_id, SUM(TIMESTAMPDIFF(MINUTE, start_time, end_time)) AS 'duration' FROM worktime GROUP BY task_id) w
@@ -119,9 +123,10 @@ class database
      * 
      * @return resutl|msqli_result
      */
-    public function getProjectDuration($id){
-        $sql= "SELECT project_id, SUM(duration) AS 'sum_duration' FROM
-            (SELECT id, project_id FROM task WHERE `project_id`= '" . mysqli_real_escape_string($this->conn, $id)."') t
+    public function getProjectDuration($id)
+    {
+        $sql = "SELECT project_id, SUM(duration) AS 'sum_duration' FROM
+            (SELECT id, project_id FROM task WHERE `project_id`= '" . mysqli_real_escape_string($this->conn, $id) . "') t
             LEFT JOIN ( SELECT task_id, SUM(TIMESTAMPDIFF(MINUTE, start_time, end_time)) AS 'duration' FROM worktime GROUP BY task_id) w
             ON t.id = task_id";
 
@@ -134,34 +139,37 @@ class database
      * 
      * @return resutl|msqli_result
      */
-    public function getAllTasksByProjectID($id){
+    public function getAllTasksByProjectID($id)
+    {
         $sql = "SELECT * FROM
-                (SELECT id, project_id, `text`, is_done FROM task WHERE (timestamp_done >=(NOW()-INTERVAL 1 DAY) OR timestamp_done IS NULL) AND `project_id`= '" . mysqli_real_escape_string($this->conn, $id)."') t
+                (SELECT id, project_id, `text`, is_done FROM task WHERE (timestamp_done >=(NOW()-INTERVAL 1 DAY) OR timestamp_done IS NULL) AND `project_id`= '" . mysqli_real_escape_string($this->conn, $id) . "') t
                 LEFT JOIN ( SELECT task_id, SUM(TIMESTAMPDIFF(MINUTE, start_time, end_time)) AS 'duration', MIN(start_time) AS 'started', MAX(end_time) AS 'ended' FROM worktime GROUP BY task_id) w
                 ON t.id = task_id";
         $result = $this->conn->query($sql);
         return $result;
     }
-    
+
     /**
      * GET ALL Projects
      * 
      * @return resutl|msqli_result
      */
-    public function getAllProjects(){
+    public function getAllProjects()
+    {
         $sql = "SELECT * FROM project";
         $result = $this->conn->query($sql);
         return $result;
     }
-    
+
     /**
      * GET Projects by user_id
      * 
      * @return resutl|msqli_result
      */
-    public function getProjectsByUserID($form_result){
+    public function getProjectsByUserID($form_result)
+    {
         $user_id = mysqli_real_escape_string($this->conn, $form_result['uid']);
-        $sql = "SELECT p.id, is_admin, `name` FROM workgroup, project p WHERE p.id = project_id AND user_id = ". $user_id .";";
+        $sql = "SELECT p.id, is_admin, `name` FROM workgroup, project p WHERE p.id = project_id AND user_id = " . $user_id . ";";
         $result = $this->conn->query($sql);
         return $result;
     }
@@ -171,13 +179,14 @@ class database
      * 
      * @return resutl|msqli_result
      */
-    public function createProject($form_result){
+    public function createProject($form_result)
+    {
         $project_text = mysqli_real_escape_string($this->conn, $form_result['project_text']);
         $uid = mysqli_real_escape_string($this->conn, $form_result['uid']);
-         $sql = "INSERT INTO project (
+        $sql = "INSERT INTO project (
             `name`
             ) VALUES (
-            '". $project_text ."'
+            '" . $project_text . "'
             );
         ";
         $sql .= " INSERT INTO workgroup (
@@ -185,13 +194,13 @@ class database
             `project_id`, 
             `is_admin`
             ) VALUES (
-                ". $uid .", 
+                " . $uid . ", 
                 LAST_INSERT_ID(), 
                 1
-            );"; 
+            );";
 
         //echo $sql;
-        
+
         if (!$this->conn->multi_query($sql)) {
             echo 'Error MySQL: ' . $this->conn->error . '<br />';
             return false;
@@ -205,15 +214,16 @@ class database
      * 
      * @return resutl|msqli_result
      */
-    public function createTask($form_result){
+    public function createTask($form_result)
+    {
         $sql = "INSERT INTO task (
             `text`,
             `project_id`,
             `user_id`
             ) VALUES (
-            '" . mysqli_real_escape_string($this->conn, $form_result['task_text'])."',
-            '" . mysqli_real_escape_string($this->conn, $form_result['project_id'])."',
-            '" . mysqli_real_escape_string($this->conn, $form_result['uid'])."'
+            '" . mysqli_real_escape_string($this->conn, $form_result['task_text']) . "',
+            '" . mysqli_real_escape_string($this->conn, $form_result['project_id']) . "',
+            '" . mysqli_real_escape_string($this->conn, $form_result['uid']) . "'
             );
         ";
 
@@ -230,7 +240,8 @@ class database
      * 
      * @return resutl|msqli_result
      */
-    public function updateToDone($id){
+    public function updateToDone($id)
+    {
         $sql = "UPDATE task SET 
                 is_done = 1, 
                 timestamp_done = CURRENT_TIMESTAMP()
@@ -249,7 +260,8 @@ class database
      * 
      * @return resutl|msqli_result
      */
-    public function updateToUndone($id){
+    public function updateToUndone($id)
+    {
         $sql = "UPDATE task SET 
                 is_done = 0, 
                 timestamp_done = NULL
@@ -264,19 +276,37 @@ class database
     }
 
     /**
+     * Delete Task by ID
+     *
+     * @return boolean|mysqli_result
+     */
+    public function deleteByTaskID($form_result)
+    {
+        $task_id = mysqli_real_escape_string($this->conn, $form_result['task_id']); 
+        $sql = "DELETE FROM task WHERE id = '" . $task_id . "';";   // won't work with recorded worktime 
+        if (!$this->conn->query($sql)) {
+            echo 'Error MySQL: ' . $this->conn->error . '<br />';
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    /**
      * INSERT worktime start
      * 
      * @return resutl|msqli_result
      */
-    public function createWorktime($form_result){
+    public function createWorktime($form_result)
+    {
         $sql = "INSERT INTO worktime (
             `task_id`
             ) VALUES (
-                '" . mysqli_real_escape_string($this->conn, $form_result['task_id'])."'
+                '" . mysqli_real_escape_string($this->conn, $form_result['task_id']) . "'
             );
         ";
         #echo $sql;
-        
+
         if (!$this->conn->query($sql)) {
             echo 'Error MySQL: ' . $this->conn->error . '<br />';
             return false;
@@ -291,7 +321,8 @@ class database
      * 
      * @return resutl|msqli_result
      */
-    public function stopWorktime($form_result){
+    public function stopWorktime($form_result)
+    {
         $sql = "UPDATE worktime SET
                 end_time = CURRENT_TIMESTAMP()
                 WHERE id = '" . mysqli_real_escape_string($this->conn, $form_result['insert_id']) . "'";
@@ -303,6 +334,4 @@ class database
             return true;
         }
     }
-
-    
 } // Klasse Ende
