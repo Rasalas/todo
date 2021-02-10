@@ -168,8 +168,6 @@ if (isset($_GET['task'])) {
             
             // Get Data from Form
             $form_result['uid'] = $_SESSION['uid'];
-            echo $form_result['uid'] . '<br>';
-            echo var_dump($form_result);
             
             // Clean content
             $page['content'] = '';
