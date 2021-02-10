@@ -1,6 +1,5 @@
 <?php
 include('auth.php');
-$_SESSION['uid'] = 1;
 require 'libs/database.php';
 require 'config.php';
 require_once 'twig/vendor/autoload.php';
@@ -165,10 +164,13 @@ if (isset($_GET['task'])) {
             header($redirect);
             break;
         case 'projects':
-
+            echo $_SESSION['uid'] . '<br>';
+            
             // Get Data from Form
             $form_result['uid'] = $_SESSION['uid'];
-
+            echo $form_result['uid'] . '<br>';
+            echo var_dump($form_result);
+            
             // Clean content
             $page['content'] = '';
 

@@ -153,20 +153,19 @@ class database
         $result = $this->conn->query($sql);
         return $result;
     }
-
+    
     /**
-     * GET Projects by ID
+     * GET Projects by user_id
      * 
      * @return resutl|msqli_result
      */
     public function getProjectsByUserID($form_result){
         $user_id = mysqli_real_escape_string($this->conn, $form_result['uid']);
-        $sql = "SELECT * FROM workgroup w, project p WHERE user_id=". $user_id ." GROUP BY p.id;";
+        $sql = "SELECT p.id, is_admin, `name` FROM workgroup, project p WHERE p.id = project_id AND user_id = ". $user_id .";";
         $result = $this->conn->query($sql);
         return $result;
     }
 
-    
     /**
      * INSERT project
      * 
