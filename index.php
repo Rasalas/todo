@@ -213,6 +213,7 @@ if (isset($_GET['task'])) {
 
             if (isset($_POST['project_id'])) {
                 $_SESSION['project_id'] = $_POST['project_id'];
+                unset($_POST['project_id']);
             }
             // Clean content
             $tasks = NULL;
@@ -227,7 +228,7 @@ if (isset($_GET['task'])) {
                 echo "Y U DO THIS?! 😡";
                 exit;
             }
-            
+
             // Get data from database
             $result = $database->getAllTasksByProjectID($_SESSION['project_id']);
             $sum_duration = $database->getProjectDuration($_SESSION['project_id']);
@@ -288,7 +289,7 @@ if (isset($_GET['task'])) {
             } else {
                 $protocol = 'http';
             }
-            $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/todo/tasks";
+            $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/todo/tasks/" .$_SESSION['project_id'];
             header($redirect);
             exit;
 
@@ -307,7 +308,7 @@ if (isset($_GET['task'])) {
             } else {
                 $protocol = 'http';
             }
-            $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/todo/tasks";
+            $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/todo/tasks/" .$_SESSION['project_id'];
             header($redirect);
             exit;
 
@@ -324,7 +325,7 @@ if (isset($_GET['task'])) {
             } else {
                 $protocol = 'http';
             }
-            $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/todo/tasks";
+            $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/todo/tasks/" .$_SESSION['project_id'];
             header($redirect);
             exit;
 
@@ -343,7 +344,7 @@ if (isset($_GET['task'])) {
             } else {
                 $protocol = 'http';
             }
-            $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/todo/tasks";
+            $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/todo/tasks/" .$_SESSION['project_id'];
             header($redirect);
             exit;
 
@@ -357,7 +358,7 @@ if (isset($_GET['task'])) {
             $page['title_header'] = $app_title . ' | Task ändern';
             $page['title_content'] = 'Task ändern';
             $page['button_save_title'] = 'Task speichern';
-            $page['button_save_link'] = 'task-update/' . $task_id . '/';
+            $page['button_save_link'] = 'task-update/' . $task_id;
 
             /// get data from form
             $form_result['task_id'] = $task_id;
@@ -400,7 +401,7 @@ if (isset($_GET['task'])) {
             } else {
                 $protocol = 'http';
             }
-            $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/todo/tasks/";
+            $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/todo/tasks/" .$_SESSION['project_id'];
             header($redirect);
             exit;
 
@@ -424,7 +425,7 @@ if (isset($_GET['task'])) {
             } else {
                 $protocol = 'http';
             }
-            $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/todo/tasks";
+            $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/todo/tasks/" .$_SESSION['project_id'];
             header($redirect);
 
             break;
@@ -445,7 +446,7 @@ if (isset($_GET['task'])) {
             } else {
                 $protocol = 'http';
             }
-            $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/todo/tasks";
+            $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/todo/tasks/" .$_SESSION['project_id'];
             header($redirect);
 
         case 'test':
@@ -479,6 +480,7 @@ if (isset($_SESSION['active_wt_start_time'])) {
  */
 function hasAccess($id){
     $projects = getProjects();
+    if($id==0) echo "ProjectID:0";//mh...
 
     $allowed = false;
     foreach ($projects as $project) {
