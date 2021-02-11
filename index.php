@@ -247,7 +247,9 @@ if (isset($_GET['task'])) {
 
             if ($result) {
                 while ($task = $result->fetch_assoc()) {
+                    $task['duration'] = formatTime($task['duration']);
                     $tasks[] = $task;
+                    
                 }
                 $result->fetch_array();
             }
@@ -280,7 +282,7 @@ if (isset($_GET['task'])) {
                 'menu' => ['tasks_create' => 1],
                 'project_id' => $_SESSION['project_id']
             ]);
-            
+
             break;
         case 'task-insert':
 
@@ -487,6 +489,7 @@ if(isset($_SESSION['active_wt_start_time'])){
 
 function formatTime($mins) // for task time
 {
+    $mins = floor($mins);
     $str = "";
     if (abs($mins) < 60) {
         $str = strval(abs($mins)) . "min";
@@ -504,7 +507,9 @@ function formatTime($mins) // for task time
     }
     if ($mins < 0) {
         return "-" . $str;
-    } else {
+    } else if($mins == 0){
+        return "";
+    }else{
         return $str;
     }
 }
