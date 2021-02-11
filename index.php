@@ -8,7 +8,8 @@ require_once 'twig/vendor/autoload.php';
 $loader = new \Twig\Loader\FilesystemLoader('templates');
 $twig = new \Twig\Environment($loader);
 
-$app_title = 'ToDo';
+$app_title = 'TODO';
+$app = array();
 $app['version'] = '1.0.0';
 $app['copyright'] = 'Copyright &copy; ' . date('Y') . ' Torben Buck';
 $project_id_access = array();
