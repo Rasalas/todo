@@ -175,7 +175,7 @@ if (isset($_GET['task'])) {
 
             echo $twig->render('projects.html', [
                 'menu' => ['projects_top' => 1, 'projects_overview' => 1],
-                'projects' => getProjects(),
+                'projects' => getProjects($_SESSION['uid'], $database),
                 'title' => 'ToDo'
             ]);
 
@@ -184,7 +184,7 @@ if (isset($_GET['task'])) {
 
             echo $twig->render('project_form.html', [
                 'menu' => ['projects_top' => 1, 'project_create' => 1],
-                'projects' => getProjects()
+                'projects' => getProjects($_SESSION['uid'], $database)
             ]);
 
             break;
@@ -196,7 +196,7 @@ if (isset($_GET['task'])) {
             $form_result['uid'] = $_SESSION['uid'];
 
             // Create Kunden
-            $database->createProject($form_result);
+            $_SESSION['project_id'] = $database->createProject($form_result);
 
             // Redirect Kunden-Liste
             if (isset($_SERVER['HTTPS'])) {
@@ -204,12 +204,45 @@ if (isset($_GET['task'])) {
             } else {
                 $protocol = 'http';
             }
-            $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/todo/projects";
+            $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/todo/tasks/". $_SESSION['project_id'];
+
+            header($redirect);
+            exit;
+
+            break;
+
+        case 'project-delete':
+
+            // Get ID from TaskData
+            $form_result['project_id'] = $taskData;
+
+            // block unallowed project_id changes
+            if (!hasAccess($_SESSION['uid'], $form_result['project_id'], $database)) {
+                echo "Y U DO THIS?! 😡";
+                exit;
+            }
+            
+            $projects = getProjects($_SESSION['uid'], $database);
+            $database->deleteByProjectID($form_result);
+            
+            $_SESSION['project_id'] = $projects[0]['id'];
+
+            // Redirect Kunden-Liste
+            if (isset($_SERVER['HTTPS'])) {
+                $protocol = ($_SERVER['HTTPS'] && $_SERVER['HTTPS'] != "off") ? "https" : "http";
+            } else {
+                $protocol = 'http';
+            }
+            $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/todo/tasks/" . $_SESSION['project_id'];
             header($redirect);
             exit;
 
             break;
         case 'tasks':
+
+            if (isset($taskData)) {
+                $_SESSION['project_id'] = $taskData;
+            }
 
             if (isset($_POST['project_id'])) {
                 $_SESSION['project_id'] = $_POST['project_id'];
@@ -219,13 +252,9 @@ if (isset($_GET['task'])) {
             $tasks = NULL;
             $projects = array();
 
-            if(isset($taskData)){
-                $_SESSION['project_id'] = $taskData;
-            }
-
             // block unallowed project_id changes
-            if(!hasAccess($_SESSION['project_id'])){
-                echo "Y U DO THIS?! 😡";
+            if (!hasAccess($_SESSION['uid'], $_SESSION['project_id'], $database)) {
+                echo "Y U DO THIS?! ... 😡";
                 exit;
             }
 
@@ -245,7 +274,7 @@ if (isset($_GET['task'])) {
             $test = array();
             $test = [
                 'tasks' => $tasks,
-                'projects' => getProjects(),
+                'projects' => getProjects($_SESSION['uid'], $database),
                 'menu' => ['tasks_top' => 1, 'tasks_overview' => 1, 'projects_top' => 1],
                 'project_id' => $_SESSION['project_id'],
                 'sumduration' => formatTime($sum_duration),
@@ -268,7 +297,7 @@ if (isset($_GET['task'])) {
 
             echo $twig->render('task_form.html', [
                 'page' => $page,
-                'projects' => getProjects(),
+                'projects' => getProjects($_SESSION['uid'], $database),
                 'menu' => ['projects_top' => 1, 'tasks_create' => 1],
                 'project_id' => $_SESSION['project_id']
             ]);
@@ -289,7 +318,7 @@ if (isset($_GET['task'])) {
             } else {
                 $protocol = 'http';
             }
-            $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/todo/tasks/" .$_SESSION['project_id'];
+            $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/todo/tasks/" . $_SESSION['project_id'];
             header($redirect);
             exit;
 
@@ -308,7 +337,7 @@ if (isset($_GET['task'])) {
             } else {
                 $protocol = 'http';
             }
-            $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/todo/tasks/" .$_SESSION['project_id'];
+            $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/todo/tasks/" . $_SESSION['project_id'];
             header($redirect);
             exit;
 
@@ -325,7 +354,7 @@ if (isset($_GET['task'])) {
             } else {
                 $protocol = 'http';
             }
-            $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/todo/tasks/" .$_SESSION['project_id'];
+            $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/todo/tasks/" . $_SESSION['project_id'];
             header($redirect);
             exit;
 
@@ -344,7 +373,7 @@ if (isset($_GET['task'])) {
             } else {
                 $protocol = 'http';
             }
-            $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/todo/tasks/" .$_SESSION['project_id'];
+            $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/todo/tasks/" . $_SESSION['project_id'];
             header($redirect);
             exit;
 
@@ -376,7 +405,7 @@ if (isset($_GET['task'])) {
 
             echo $twig->render('task_form.html', [
                 'page' => $page,
-                'projects' => getProjects(),
+                'projects' => getProjects($_SESSION['uid'], $database),
                 'data' => $task,
                 'menu' => ['projects_top' => 1, 'tasks_top' => 1],
                 'task_id' => $form_result['task_id']
@@ -401,7 +430,7 @@ if (isset($_GET['task'])) {
             } else {
                 $protocol = 'http';
             }
-            $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/todo/tasks/" .$_SESSION['project_id'];
+            $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/todo/tasks/" . $_SESSION['project_id'];
             header($redirect);
             exit;
 
@@ -425,7 +454,7 @@ if (isset($_GET['task'])) {
             } else {
                 $protocol = 'http';
             }
-            $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/todo/tasks/" .$_SESSION['project_id'];
+            $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/todo/tasks/" . $_SESSION['project_id'];
             header($redirect);
 
             break;
@@ -446,7 +475,7 @@ if (isset($_GET['task'])) {
             } else {
                 $protocol = 'http';
             }
-            $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/todo/tasks/" .$_SESSION['project_id'];
+            $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/todo/tasks/" . $_SESSION['project_id'];
             header($redirect);
 
         case 'test':
@@ -478,31 +507,35 @@ if (isset($_SESSION['active_wt_start_time'])) {
  * FUNKTIONEN: Auszulagern
  * 
  */
-function hasAccess($id){
-    $projects = getProjects();
-    if($id==0) echo "ProjectID:0";//mh...
+function hasAccess($uid, $project_id, $database)
+{
+    $projects = getProjects($uid, $database);
+    //if ($id == 0) echo "ProjectID:0"; //mh...
 
     $allowed = false;
     foreach ($projects as $project) {
-        if($id == $project['id']){
+        if ($project_id == $project['id']) {
             $allowed = true;
         }
     }
     return $allowed;
 }
 
-function getProjects(){
- // projects (sidebar)
-    global $database;
-    $form_result['uid'] = $_SESSION['uid'];
+function getProjects($uid, $database)
+{
+    $form_result['uid'] = $uid;
     $result = $database->getProjectsByUserID($form_result);
     if ($result) {
         while ($project = $result->fetch_assoc()) {
             $projects[] = $project;
         }
         $result->fetch_array();
+
+        return $projects;
+    }else{
+        echo 'Result empty';
     }
-    return $projects;
+    return false;
 }
 
 function formatTime($mins) // for task time

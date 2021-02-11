@@ -155,6 +155,7 @@ class database
     {
         $user_id = mysqli_real_escape_string($this->conn, $form_result['uid']);
         $sql = "SELECT p.id, is_admin, `name` FROM workgroup, project p WHERE p.id = project_id AND user_id = " . $user_id . ";";
+        #echo $sql;
         $result = $this->conn->query($sql);
         return $result;
     }
@@ -186,6 +187,24 @@ class database
 
         //echo $sql;
 
+        if (!$this->conn->multi_query($sql)) {
+            echo 'Error MySQL: ' . $this->conn->error . '<br />';
+            return false;
+        } else {
+            return  $this->conn->insert_id;
+        }
+    }
+
+    /**
+     * Delete Project by ID
+     *
+     * @return boolean|mysqli_result
+     */
+    public function deleteByProjectID($form_result)
+    {
+        $project_id = mysqli_real_escape_string($this->conn, $form_result['project_id']); 
+        $sql = "DELETE FROM workgroup WHERE project_id = '" . $project_id . "';";
+        $sql .= "DELETE FROM project WHERE id = '" . $project_id . "';"; 
         if (!$this->conn->multi_query($sql)) {
             echo 'Error MySQL: ' . $this->conn->error . '<br />';
             return false;
