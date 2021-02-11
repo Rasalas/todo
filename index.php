@@ -11,6 +11,7 @@ $twig = new \Twig\Environment($loader);
 $app_title = 'ToDo';
 $app['version'] = '1.0.0';
 $app['copyright'] = 'Copyright &copy; ' . date('Y') . ' Torben Buck';
+$project_id_access = array();
 
 // Setup Database
 $database = new database($config["servername"], $config["username"], $config["password"], $config["dbname"]);
@@ -219,6 +220,12 @@ if (isset($_GET['task'])) {
 
             if(isset($taskData)){
                 $_SESSION['project_id'] = $taskData;
+            }
+
+            // block unallowed project_id changes
+            if(!hasAccess($_SESSION['project_id'])){
+                echo "Y U DO THIS?! 😡";
+                exit;
             }
             
             // Get data from database
@@ -470,6 +477,18 @@ if (isset($_SESSION['active_wt_start_time'])) {
  * FUNKTIONEN: Auszulagern
  * 
  */
+function hasAccess($id){
+    $projects = getProjects();
+
+    $allowed = false;
+    foreach ($projects as $project) {
+        if($id == $project['id']){
+            $allowed = true;
+        }
+    }
+    return $allowed;
+}
+
 function getProjects(){
  // projects (sidebar)
     global $database;
