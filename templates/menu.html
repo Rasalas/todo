@@ -132,13 +132,40 @@
             <ul class="nav nav-pills nav-sidebar flex-column nav-flat nav-child-indent" data-widget="treeview" role="menu" data-accordion="false">
                 <!-- Add icons to the links using the .nav-icon class
              with font-awesome or any other icon font library -->
+
+                {% if active_wt_insert_id != null %}
+                <li class="nav-header">LAUFENDER TIMER</li>
+                <li class="nav-item">
+                    <a href="timer-stop/{{ active_wt_insert_id }}" class="nav-link warning">
+                        <i class="nav-icon fa fa-stop" aria-hidden="true"></i>
+                        <p>STOPP </p><span class="timer" id="timer">00:00:00</span>
+                    </a>
+                </li>
+                {% endif %}
+
+                <li class="nav-header">NAVIGATION</li>
+                <li class="nav-item"> <!-- class="nav-item menu-open" -->
+                    <a href="task-create" class="nav-link {{ menu.task_create ? 'active' }}"> <!-- class="nav-link active" -->
+                        <i class="nav-icon fa fa-plus"></i>
+                        <p>Neue Aufgabe</p>
+                    </a>
+                    <!-- <ul class="nav nav-treeview">
+                        <li class="nav-item"> 
+                            <a href="task-create" class="nav-link{{ menu.task_create ? ' active' }}">
+                                <i class="fa fa-plus nav-icon"></i>
+                                <p>Neue Aufgabe</p>
+                            </a>
+                        </li>
+                    </ul> -->
+                </li>
+
                 <li class="nav-item{{ menu.projects_top ? ' menu-open'}}">
                     <a href="projects" class="nav-link {{ menu.projects ? 'active' }}">
                         <i class="nav-icon fas fa-th"></i>
                         <p>
                             Projekte
                             <i class="fas fa-angle-left right"></i>
-                            <span class="badge badge-info right">2</span>
+                            <!-- <span class="badge badge-info right">2</span> -->
                         </p>
                     </a>
                     <ul class="nav nav-treeview">
@@ -149,41 +176,26 @@
                             </a>
                         </li>
                     </ul>
-                    <ul class="nav nav-treeview">
+                    <!-- <ul class="nav nav-treeview">
                         <li class="nav-item"> 
                             <a href="projects" class="nav-link{{ menu.projects_overview ? ' active' }}">
                                 <i class="fa fa-tasks nav-icon"></i>
                                 <p>Übersicht</p>
                             </a>
                         </li>
+                    </ul> -->
+                    {% for project in projects  %}
+                    <ul class="nav nav-treeview">
+                      <li class="nav-item"> 
+                          <a href="tasks/{{ project.id }}" class="nav-link{{ project_id == project.id ? ' active' }}">
+                              <i class="fa fa-tasks nav-icon"></i>
+                              <p>{{ project.name }}</p>
+                          </a>
+                      </li>
                     </ul>
+                    {% endfor %}
                 </li>
                 
-                <li class="nav-item{{ menu.tasks_top ? ' menu-open'}}"> <!-- class="nav-item menu-open" -->
-                    <a href="tasks" class="nav-link {{ menu.tasks ? 'active' }}"> <!-- class="nav-link active" -->
-                        <i class="nav-icon fas fa-edit"></i>
-                        <p>
-                            Aufgaben
-                            <i class="fas fa-angle-left right"></i>
-                        </p>
-                    </a>
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item"> 
-                            <a href="task-create" class="nav-link{{ menu.task_create ? ' active' }}">
-                                <i class="fa fa-plus nav-icon"></i>
-                                <p>Neue Aufgabe</p>
-                            </a>
-                        </li>
-                    </ul>
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item"> 
-                            <a href="tasks" class="nav-link{{ menu.tasks_overview ? ' active' }}">
-                                <i class="fa fa-tasks nav-icon"></i>
-                                <p>Übersicht</p>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
                 
                 <li class="nav-header">VERSCHIEDENES</li>
                 <li class="nav-item {{ menu.docs_top ? 'menu-open'}}">
@@ -192,15 +204,7 @@
                         <p>AdminLTE Doc</p>
                     </a>
                 </li>
-                {% if active_wt_insert_id != null %}
-                <li class="nav-header">LAUFENDER TIMER</li>
-                <li class="nav-item">
-                    <a href="timer-stop/{{ active_wt_insert_id }}" class="nav-link warning">
-                        <i class="nav-icon fa fa-stop" aria-hidden="true"></i>
-                        <p>STOPP </p><span class="timer" id="timer">00:00:00</span>
-                    </a>
-                </li>
-                {% endif %}
+                
                 
             </ul>
         </nav>

@@ -20,7 +20,7 @@ if (isset($_GET['task'])) {
     $urlTask = $_GET['task'];
     if ($urlTask) {
         $urlCutter = explode("/", $urlTask);
-        if($urlCutter[0] == "") array_shift($urlCutter);
+        if ($urlCutter[0] == "") array_shift($urlCutter);
         switch (count($urlCutter)) {
             case 1:
                 $task = $urlCutter[0];
@@ -171,31 +171,10 @@ if (isset($_GET['task'])) {
             header($redirect);
             break;
         case 'projects':
-            echo $_SESSION['uid'] . '<br>';
-
-            // Get Data from Form
-            $form_result['uid'] = $_SESSION['uid'];
-
-            // Clean content
-            $page['content'] = '';
-
-            // Get data from database
-            $result = $database->getProjectsByUserID($form_result);
-
-            // All rows in array
-            while ($project = $result->fetch_assoc()) {
-                $projects[] = $project;
-            }
-
-            $result->fetch_array();
-
-            // Sending content to data
-            $data = array();
-            $data['page'] = $page;
 
             echo $twig->render('projects.html', [
                 'menu' => ['projects_top' => 1, 'projects_overview' => 1],
-                'projects' => $projects,
+                'projects' => getProjects(),
                 'title' => 'ToDo'
             ]);
 
@@ -203,7 +182,8 @@ if (isset($_GET['task'])) {
         case 'project-create':
 
             echo $twig->render('project_form.html', [
-                'menu' => ['projects_top' => 1, 'project_create' => 1]
+                'menu' => ['projects_top' => 1, 'project_create' => 1],
+                'projects' => getProjects()
             ]);
 
             break;
@@ -235,29 +215,30 @@ if (isset($_GET['task'])) {
             }
             // Clean content
             $tasks = NULL;
+            $projects = array();
 
+            if(isset($taskData)){
+                $_SESSION['project_id'] = $taskData;
+            }
+            
             // Get data from database
             $result = $database->getAllTasksByProjectID($_SESSION['project_id']);
             $sum_duration = $database->getProjectDuration($_SESSION['project_id']);
 
-            // Create Content
-            $table_tr_start = '<tr>';
-            $table_tr_end = '</tr>';
-            $i = 0;
-
+            // tasks
             if ($result) {
                 while ($task = $result->fetch_assoc()) {
                     $task['duration'] = formatTime($task['duration']);
                     $tasks[] = $task;
-                    
                 }
                 $result->fetch_array();
             }
+
             $test = array();
             $test = [
-                'session' => $_SESSION,
                 'tasks' => $tasks,
-                'menu' => ['tasks_top' => 1, 'tasks_overview' => 1],
+                'projects' => getProjects(),
+                'menu' => ['tasks_top' => 1, 'tasks_overview' => 1, 'projects_top' => 1],
                 'project_id' => $_SESSION['project_id'],
                 'sumduration' => formatTime($sum_duration),
                 'title' => 'ToDo'
@@ -279,7 +260,8 @@ if (isset($_GET['task'])) {
 
             echo $twig->render('task_form.html', [
                 'page' => $page,
-                'menu' => ['tasks_create' => 1],
+                'projects' => getProjects(),
+                'menu' => ['projects_top' => 1, 'tasks_create' => 1],
                 'project_id' => $_SESSION['project_id']
             ]);
 
@@ -369,7 +351,7 @@ if (isset($_GET['task'])) {
             $page['title_content'] = 'Task ändern';
             $page['button_save_title'] = 'Task speichern';
             $page['button_save_link'] = 'task-update/' . $task_id . '/';
-                    
+
             /// get data from form
             $form_result['task_id'] = $task_id;
 
@@ -382,17 +364,18 @@ if (isset($_GET['task'])) {
             while ($row = $result->fetch_assoc()) {
                 $task['text'] = $row['text'];
                 $task['description'] = htmlentities($row['description']);
-            } 
+            }
 
             echo $twig->render('task_form.html', [
                 'page' => $page,
+                'projects' => getProjects(),
                 'data' => $task,
-                'menu' => ['tasks_top' => 1,],
+                'menu' => ['projects_top' => 1, 'tasks_top' => 1],
                 'task_id' => $form_result['task_id']
             ]);
 
             break;
-        
+
         case 'task-update':
 
             // Get ID from TaskData
@@ -424,7 +407,7 @@ if (isset($_GET['task'])) {
 
             // start timer
             $_SESSION['active_wt_insert_id'] = $database->createWorktime($form_result);
-            if(isset($_SESSION['active_wt_insert_id'])){
+            if (isset($_SESSION['active_wt_insert_id'])) {
                 $_SESSION['active_wt_start_time'] = round(microtime(true) * 1000);
             }
 
@@ -477,8 +460,9 @@ if (isset($_GET['task'])) {
     header($redirect);
 }
 
-if(isset($_SESSION['active_wt_start_time'])){
-    echo '<script> getTimer('. $_SESSION['active_wt_start_time']  .') </script>';
+// Laufender Timer
+if (isset($_SESSION['active_wt_start_time'])) {
+    echo '<script> getTimer(' . $_SESSION['active_wt_start_time']  . ') </script>';
 }
 
 
@@ -486,6 +470,19 @@ if(isset($_SESSION['active_wt_start_time'])){
  * FUNKTIONEN: Auszulagern
  * 
  */
+function getProjects(){
+ // projects (sidebar)
+    global $database;
+    $form_result['uid'] = $_SESSION['uid'];
+    $result = $database->getProjectsByUserID($form_result);
+    if ($result) {
+        while ($project = $result->fetch_assoc()) {
+            $projects[] = $project;
+        }
+        $result->fetch_array();
+    }
+    return $projects;
+}
 
 function formatTime($mins) // for task time
 {
@@ -507,9 +504,9 @@ function formatTime($mins) // for task time
     }
     if ($mins < 0) {
         return "-" . $str;
-    } else if($mins == 0){
+    } else if ($mins == 0) {
         return "";
-    }else{
+    } else {
         return $str;
     }
 }
