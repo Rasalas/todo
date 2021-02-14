@@ -63,7 +63,7 @@
                     <!-- todo text -->
                     <span class="text">{{ task.text }}</span>
                     <!-- Emphasis label -->
-                    {{ task.duration ? '<small class="badge badge-info"><i class="far fa-clock"></i>'|raw}} {{ task.duration ? task.duration}} {{task.duration ? '</small>'|raw}}
+                    {{ task.duration ? '<small class="badge badge-info"><i class="far fa-clock"></i>'|raw}} {{ task.duration ?? ''}} {{task.duration ? '</small>'|raw}}
                     <!-- Description Label -->
                     {{task.description ? '<i class="ml-2 far fa-comment-alt" class="btn btn-secondary" data-bs-toggle="tooltip" data-placement="right" data-html="true" title="<p>'|raw}} {{ task.description ? task.description|raw}} {{ task.description ? '</p>"></i>'|raw}}
                     <!-- General tools such as edit or delete-->
@@ -85,6 +85,75 @@
             
           </div>
           <!--/.col (right) -->
+
+          <!-- right column -->
+          <div class="col-md-6">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Erledigte Aufgaben</h3>
+                <a href="bill-create"><button type="button" class="btn btn-info float-right"><i class="fas fa-receipt"></i> Abrechnen</button></a>
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body table-responsive p-0" style="height: 300px;">
+                <table class="table table-sm table-head-fixed text-nowrap">
+                  <thead>
+                    <tr>
+                      <th>Aufgabe</th>
+                      <th>Erledigt</th>
+                      <th style="width: 40px">Dauer</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for done_task in done_tasks %}
+                    <tr>
+                      <td>{{ done_task.text }}</td>
+                      <td>{{ done_task.timestamp_done }}</td>
+                      <td>{{ done_task.duration ? '<span class="badge bg-info"><i class="far fa-clock"></i>'|raw}} {{ done_task.duration ?? '' }} {{done_task.duration ? '</span>'|raw}}</td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+              <!-- /.card-body -->
+              
+            </div>
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Abgerechnete Aufgaben</h3>
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body table-responsive p-0" style="min-height: 100px; max-height: 300px;">
+                <table class="table table-sm table-head-fixed text-nowrap">
+                  <thead>
+                    <tr>
+                      <th>Titel</th>
+                      <th>Gezahlt?</th>
+                      <th>Dauer</th>
+                      <th>€/h</th>
+                      <th>Wert</th>
+                      <th style="width: 40px">Erstellt</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for bill in bills %}
+                    <tr>
+                      <td>{{ bill.title }}</td>
+                      <td align="center"  style="width: 50px">{{ bill.is_paid == 0 ? '<i class="far fa-circle"></i>' : '<i class="far fa-check-circle"></i>' }}</td>
+                      <td style="width: 80px">{{ bill.sum_duration }}</td>
+                      <td style="width: 60px">{{ bill.hour_pay }}</td>
+                      <td style="width: 100px">{{ bill.pay }}</td>
+                      <td>{{ bill.timestamp }}</td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+              
+            </div>
+            <!-- /.card-body -->
+          </div>
+          <!--/.col (right) -->
+          
         </div>
         <!-- /.row -->
       </div><!-- /.container-fluid -->

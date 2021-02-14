@@ -205,7 +205,7 @@ if (isset($_GET['task'])) {
             } else {
                 $protocol = 'http';
             }
-            $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/todo/tasks/". $_SESSION['project_id'];
+            $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/todo/tasks/" . $_SESSION['project_id'];
 
             header($redirect);
             exit;
@@ -222,10 +222,10 @@ if (isset($_GET['task'])) {
                 echo "Y U DO THIS?! 😡";
                 exit;
             }
-            
+
             $projects = getProjects($_SESSION['uid'], $database);
             $database->deleteByProjectID($form_result);
-            
+
             $_SESSION['project_id'] = $projects[0]['id'];
 
             // Redirect Kunden-Liste
@@ -251,6 +251,8 @@ if (isset($_GET['task'])) {
             }
             // Clean content
             $tasks = NULL;
+            $done_tasks = NULL;
+            $bills = NULL;
             $projects = array();
 
             // block unallowed project_id changes
@@ -260,22 +262,47 @@ if (isset($_GET['task'])) {
             }
 
             // Get data from database
-            $result = $database->getAllTasksByProjectID($_SESSION['project_id']);
+            $result_tasks = $database->getAllTasksByProjectID($_SESSION['project_id']);
+            $result_done_tasks = $database->getAllDoneTasksByProjectID($_SESSION['project_id']);
             $sum_duration = $database->getProjectDuration($_SESSION['project_id']);
-
+            $result_bills = $database->getBillByProjectAndUserID([ 'project_id' => $_SESSION['project_id'], 'user_id' => $_SESSION['uid']]);
+            
             // tasks
-            if ($result) {
-                while ($task = $result->fetch_assoc()) {
+            if ($result_tasks) {
+                while ($task = $result_tasks->fetch_assoc()) {
                     $task['duration'] = formatTime($task['duration']);
                     $task['description'] = htmlentities(nl2br($task['description']));
                     $tasks[] = $task;
                 }
-                $result->fetch_array();
+                $result_tasks->fetch_array();
             }
+
+            // done tasks
+            if ($result_done_tasks) {
+                while ($done_task = $result_done_tasks->fetch_assoc()) {
+                    $done_task['duration'] = formatTime($done_task['duration']);
+                    $done_task['timestamp_done'] = $done_task['timestamp_done'];
+                    $done_tasks[] = $done_task;
+                }
+                $result_done_tasks->fetch_array();
+            }
+
+            // bills
+            if ($result_bills) {
+                while ($bill = $result_bills->fetch_assoc()) {
+                    $bill['pay'] = $bill['sum_duration'] /60*$bill['hour_pay'] . "€";
+                    $bill['sum_duration'] = formatTime($bill['sum_duration']);
+                    $bills[] = $bill;
+                }
+                $result_bills->fetch_array();
+            }
+
 
             $test = array();
             $test = [
                 'tasks' => $tasks,
+                'done_tasks' => $done_tasks,
+                'bills' => $bills,
                 'projects' => getProjects($_SESSION['uid'], $database),
                 'menu' => ['tasks_top' => 1, 'tasks_overview' => 1, 'projects_top' => 1],
                 'project_id' => $_SESSION['project_id'],
@@ -471,7 +498,7 @@ if (isset($_GET['task'])) {
             // stop timer
             $database->stopWorktime($form_result);
 
-            // Redirect Kunden-Liste
+            // Redirect tasks
             if (isset($_SERVER['HTTPS'])) {
                 $protocol = ($_SERVER['HTTPS'] && $_SERVER['HTTPS'] != "off") ? "https" : "http";
             } else {
@@ -480,6 +507,48 @@ if (isset($_GET['task'])) {
             $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/todo/tasks/" . $_SESSION['project_id'];
             header($redirect);
 
+        case 'bill-create':
+
+            $page = array();
+            $page['title_header'] = $app_title . ' | Abrechnung erstellen';
+            $page['title_content'] = 'Abrechnung erstellen';
+            $page['button_save_title'] = 'Abrechnung speichern';
+            $page['button_save_link'] = 'bill-insert/';
+
+            $data['sum_duration'] =  $database->getDoneTasksOfProjectDuration($_SESSION['project_id']);
+            $data['sum_duration_ez'] = formatTime($data['sum_duration']);
+            
+            echo $twig->render('bill_form.html', [
+                'page' => $page,
+                'menu' => ['projects_top' => 1],
+                'projects' => getProjects($_SESSION['uid'], $database),
+                'data' => $data,
+                'project_id' => $_SESSION['project_id']
+            ]);
+
+            break;
+
+        case 'bill-insert':
+
+            // Get Data from Form
+            $form_result = $_POST;
+            $form_result['uid'] = $_SESSION['uid'];
+            $form_result['project_id'] = $_SESSION['project_id'];
+
+            // Create Kunden
+            $database->createBill($form_result);
+
+            // Redirect Kunden-Liste
+            if (isset($_SERVER['HTTPS'])) {
+                $protocol = ($_SERVER['HTTPS'] && $_SERVER['HTTPS'] != "off") ? "https" : "http";
+            } else {
+                $protocol = 'http';
+            }
+            $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/todo/tasks/" . $_SESSION['project_id'];
+            header($redirect);
+            exit;
+
+            break;
         case 'test':
             echo $twig->render('projects.html', ['title' => 'ToDo']);
             break;
@@ -534,7 +603,7 @@ function getProjects($uid, $database)
         $result->fetch_array();
 
         return $projects;
-    }else{
+    } else {
         echo 'Result empty';
     }
     return false;

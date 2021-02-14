@@ -119,14 +119,87 @@ class database
     }
 
     /**
+     * INSERT bill
+     * 
+     * @return resutl|msqli_result
+     */
+    public function createBill($form_result)
+    {
+        $title = mysqli_real_escape_string($this->conn, $form_result['bill_title']);
+        $project_id = mysqli_real_escape_string($this->conn, $form_result['project_id']);
+        $user_id = mysqli_real_escape_string($this->conn, $form_result['uid']);
+        $sum_duration = mysqli_real_escape_string($this->conn, $form_result['bill_sum_duration']);
+        $hour_pay = mysqli_real_escape_string($this->conn, $form_result['bill_hour_pay']);
+        $is_paid = mysqli_real_escape_string($this->conn, $form_result['bill_is_paid']);
+
+        $sql = "INSERT INTO bill (
+            `title`,
+            `project_id`,
+            `user_id`,
+            `sum_duration`,
+            `hour_pay`,
+            `is_paid`
+            ) VALUES (
+                '" . $title . "',
+                '" . $project_id . "',
+                '" . $user_id . "',
+                '" . $sum_duration . "',
+                '" . $hour_pay . "',
+                '" . $is_paid . "'
+            );
+        ";
+        #echo $sql;
+
+        if (!$this->conn->query($sql)) {
+            echo 'Error MySQL: ' . $this->conn->error . '<br />';
+            return false;
+        } else {
+            return  $this->conn->insert_id;
+        }
+    }
+
+    /**
+     * GET bill by project_id
+     * 
+     * @return resutl|msqli_result
+     */
+    public function getBillByProjectAndUserID($form_result)
+    {
+        $user_id = mysqli_real_escape_string($this->conn, $form_result['user_id']);
+        $project_id = mysqli_real_escape_string($this->conn, $form_result['project_id']);
+        $sql = "SELECT * FROM bill WHERE `user_id` = '". $user_id ."' AND project_id='". $project_id ."'";
+
+        $result = $this->conn->query($sql);
+        return $result;
+    }
+
+    /**
      * GET SUM(duration) by project_id
      * 
      * @return resutl|msqli_result
      */
     public function getProjectDuration($id)
     {
+        $project_id = mysqli_real_escape_string($this->conn, $id);
         $sql = "SELECT project_id, SUM(duration) AS 'sum_duration' FROM
-            (SELECT id, project_id FROM task WHERE `project_id`= '" . mysqli_real_escape_string($this->conn, $id) . "') t
+            (SELECT id, project_id FROM task WHERE `project_id`= '" . $project_id . "') t
+            LEFT JOIN ( SELECT task_id, SUM(TIMESTAMPDIFF(SECOND, start_time, end_time) / 60) AS 'duration' FROM worktime GROUP BY task_id) w
+            ON t.id = task_id";
+
+        $result = $this->conn->query($sql)->fetch_object()->sum_duration;
+        return $result;
+    }
+
+    /**
+     * GET SUM(duration) by project_id of done tasks
+     * 
+     * @return resutl|msqli_result
+     */
+    public function getDoneTasksOfProjectDuration($id)
+    {
+        $project_id = mysqli_real_escape_string($this->conn, $id);
+        $sql = "SELECT project_id, SUM(duration) AS 'sum_duration' FROM
+            (SELECT id, project_id FROM task WHERE `project_id`= '" . $project_id . "' AND is_done = 1) t
             LEFT JOIN ( SELECT task_id, SUM(TIMESTAMPDIFF(SECOND, start_time, end_time) / 60) AS 'duration' FROM worktime GROUP BY task_id) w
             ON t.id = task_id";
 
@@ -222,6 +295,21 @@ class database
     {
         $sql = "SELECT * FROM
                 (SELECT id, project_id, `text`, `description`, is_done FROM task WHERE (timestamp_done >=(NOW()-INTERVAL 10 HOUR) OR timestamp_done IS NULL) AND `project_id`= '" . mysqli_real_escape_string($this->conn, $id) . "') t
+                LEFT JOIN ( SELECT task_id, SUM(TIMESTAMPDIFF(SECOND, start_time, end_time) / 60) AS 'duration', MIN(start_time) AS 'started', MAX(end_time) AS 'ended' FROM worktime GROUP BY task_id) w
+                ON t.id = task_id";
+        $result = $this->conn->query($sql);
+        return $result;
+    }
+
+    /**
+     * GET ALL done tasks by project_id
+     * 
+     * @return resutl|msqli_result
+     */
+    public function getAllDoneTasksByProjectID($id)
+    {
+        $sql = "SELECT * FROM
+                (SELECT id, project_id, `text`, `description`, `timestamp_done`, is_done FROM task WHERE is_done = 1 AND `project_id`= '" . mysqli_real_escape_string($this->conn, $id) . "' ORDER BY timestamp_done DESC LIMIT 50000) t
                 LEFT JOIN ( SELECT task_id, SUM(TIMESTAMPDIFF(SECOND, start_time, end_time) / 60) AS 'duration', MIN(start_time) AS 'started', MAX(end_time) AS 'ended' FROM worktime GROUP BY task_id) w
                 ON t.id = task_id";
         $result = $this->conn->query($sql);

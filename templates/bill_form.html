@@ -1,0 +1,89 @@
+{% include 'header.html' %}
+<div class="wrapper">
+  {% include 'menu.html' %}
+
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>{{ page.title_header }}</h1>
+          </div>
+          <!-- <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="#">Home</a></li>
+              <li class="breadcrumb-item active">Aufgaben</li>
+            </ol>
+          </div> -->
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-md-6">
+
+            <div class="card card-primary">
+              <div class="card-header">
+                <h3 class="card-title">{{ page.title_content }}</h3>
+              </div>
+              <!-- /.card-header -->
+              <!-- form start -->
+              <form action="{{ page.button_save_link }}" method="POST">
+                <input type="hidden" id="bill_id" name="bill_id" value="{{ bill_id }}">
+                <div class="card-body">
+                  <div class="form-group">
+                    <label for="bill_title">Titel</label>
+                    <input type="text" class="form-control" id="bill_title" name="bill_title" value="{{ data.title }}"
+                      placeholder="Milestone 1">
+                  </div>
+                  <div class="form-group">
+                    <label for="bill_hour_pay">Stundenlohn</label>
+                    <input type="text" class="form-control" id="bill_hour_pay" name="bill_hour_pay"
+                      value="{{ data.hour_pay }}" placeholder="20">
+                  </div><div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="bill_sum_duration">Arbeitszeit</label>
+                      <input type="text" class="form-control" id="bill_sum_duration" name="bill_sum_duration"
+                        value="{{ data.sum_duration }}" readonly>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="bill_sum_duration">Arbeitszeit</label>
+                      <input type="text" class="form-control" id="" name=""
+                        value="{{ data.sum_duration_ez }}" readonly>
+                    </div>
+                  </div>
+                </div>
+                </div>
+                <!-- /.card-body -->
+
+                <div class="card-footer">
+                  <button type="submit" class="btn btn-primary">{{ page.button_save_title }}</button>
+                </div>
+              </form>
+            </div>
+            <!-- /.card -->
+
+          </div>
+          <!-- /.col -->
+        </div>
+        <!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+  {% include 'footer.html' %}
+  <!-- Page specific script -->
+  <script>
+    $(function () {
+      bsCustomFileInput.init();
+    });
+  </script>
