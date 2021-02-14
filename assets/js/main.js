@@ -1,3 +1,6 @@
+
+
+
 function getTimer(startTime){
 
     putTimer(startTime) // immediate update
@@ -33,7 +36,10 @@ function leadingZeros(number, count){
 
 $( document ).ready(function() {
 
-
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+    })
 
     /* // DataTable unterkuenfte
     $('#table-unterkuenfte').DataTable( {

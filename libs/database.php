@@ -221,7 +221,7 @@ class database
     public function getAllTasksByProjectID($id)
     {
         $sql = "SELECT * FROM
-                (SELECT id, project_id, `text`, is_done FROM task WHERE (timestamp_done >=(NOW()-INTERVAL 10 HOUR) OR timestamp_done IS NULL) AND `project_id`= '" . mysqli_real_escape_string($this->conn, $id) . "') t
+                (SELECT id, project_id, `text`, `description`, is_done FROM task WHERE (timestamp_done >=(NOW()-INTERVAL 10 HOUR) OR timestamp_done IS NULL) AND `project_id`= '" . mysqli_real_escape_string($this->conn, $id) . "') t
                 LEFT JOIN ( SELECT task_id, SUM(TIMESTAMPDIFF(SECOND, start_time, end_time) / 60) AS 'duration', MIN(start_time) AS 'started', MAX(end_time) AS 'ended' FROM worktime GROUP BY task_id) w
                 ON t.id = task_id";
         $result = $this->conn->query($sql);

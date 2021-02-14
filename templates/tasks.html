@@ -37,7 +37,7 @@
                   To Do List - <b>{{ sumduration }}</b>
                 </h3>
 
-                <div class="card-tools">
+                <!-- <div class="card-tools">
                   <ul class="pagination pagination-sm">
                     <li class="page-item"><a href="#" class="page-link">&laquo;</a></li>
                     <li class="page-item"><a href="#" class="page-link">1</a></li>
@@ -45,7 +45,7 @@
                     <li class="page-item"><a href="#" class="page-link">3</a></li>
                     <li class="page-item"><a href="#" class="page-link">&raquo;</a></li>
                   </ul>
-                </div>
+                </div> -->
               </div>
               <!-- /.card-header -->
               <div class="card-body">
@@ -64,7 +64,8 @@
                     <span class="text">{{ task.text }}</span>
                     <!-- Emphasis label -->
                     {{ task.duration ? '<small class="badge badge-info"><i class="far fa-clock"></i>'|raw}} {{ task.duration ? task.duration}} {{task.duration ? '</small>'|raw}}
-                    
+                    <!-- Description Label -->
+                    {{task.description ? '<i class="ml-2 far fa-comment-alt" class="btn btn-secondary" data-bs-toggle="tooltip" data-placement="right" data-html="true" title="<p>'|raw}} {{ task.description ? task.description|raw}} {{ task.description ? '</p>"></i>'|raw}}
                     <!-- General tools such as edit or delete-->
                     <div class="tools">
                       <span class="task-time" data-link="task-time/{{ task.id }}"><i class="far fa-clock"></i></span>

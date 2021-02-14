@@ -1,3 +1,8 @@
+/*normally center aligned*/
+.tooltip.show p {
+    text-align:left;
+    margin: 8px;
+}
 
 #timer, .right {
     float: right;

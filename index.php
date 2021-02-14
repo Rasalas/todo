@@ -267,6 +267,7 @@ if (isset($_GET['task'])) {
             if ($result) {
                 while ($task = $result->fetch_assoc()) {
                     $task['duration'] = formatTime($task['duration']);
+                    $task['description'] = nl2br($task['description']);
                     $tasks[] = $task;
                 }
                 $result->fetch_array();
