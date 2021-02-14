@@ -1,3 +1,7 @@
+.tools span i{
+    padding:4px;
+}
+
 /*normally center aligned*/
 .tooltip.show p {
     text-align:left;
