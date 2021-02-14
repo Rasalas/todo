@@ -340,8 +340,9 @@ class database
     public function deleteByTaskID($form_result)
     {
         $task_id = mysqli_real_escape_string($this->conn, $form_result['task_id']); 
-        $sql = "DELETE FROM task WHERE id = '" . $task_id . "';";   // won't work with recorded worktime 
-        if (!$this->conn->query($sql)) {
+        $sql = "DELETE FROM worktime WHERE task_id = '" . $task_id . "';";
+        $sql .= "DELETE FROM task WHERE id = '" . $task_id . "';";   // won't work with recorded worktime 
+        if (!$this->conn->multi_query($sql)) {
             echo 'Error MySQL: ' . $this->conn->error . '<br />';
             return false;
         } else {
