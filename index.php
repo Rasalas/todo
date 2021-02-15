@@ -290,7 +290,7 @@ if (isset($_GET['task'])) {
             // bills
             if ($result_bills) {
                 while ($bill = $result_bills->fetch_assoc()) {
-                    $bill['pay'] = $bill['sum_duration'] /60*$bill['hour_pay'] . "€";
+                    $bill['pay'] = round($bill['sum_duration'] /60*$bill['hour_pay'], 2) . "€";
                     $bill['sum_duration'] = formatTime($bill['sum_duration']);
                     $bills[] = $bill;
                 }

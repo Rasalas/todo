@@ -148,13 +148,14 @@ class database
                 '" . $is_paid . "'
             );
         ";
+        $sql .= "UPDATE task SET bill_id = LAST_INSERT_ID() WHERE project_id = '". $project_id ."' AND user_id = '". $user_id ."'"; 
         #echo $sql;
 
-        if (!$this->conn->query($sql)) {
+        if (!$this->conn->multi_query($sql)) {
             echo 'Error MySQL: ' . $this->conn->error . '<br />';
             return false;
         } else {
-            return  $this->conn->insert_id;
+            return true;
         }
     }
 
@@ -308,8 +309,9 @@ class database
      */
     public function getAllDoneTasksByProjectID($id)
     {
+        $project_id = mysqli_real_escape_string($this->conn, $id);
         $sql = "SELECT * FROM
-                (SELECT id, project_id, `text`, `description`, `timestamp_done`, is_done FROM task WHERE is_done = 1 AND `project_id`= '" . mysqli_real_escape_string($this->conn, $id) . "' ORDER BY timestamp_done DESC LIMIT 50000) t
+                (SELECT id, project_id, `text`, `description`, `timestamp_done`, is_done FROM task WHERE is_done = 1 AND bill_id IS NULL AND `project_id`= '" . $project_id . "' ORDER BY timestamp_done DESC LIMIT 50000) t
                 LEFT JOIN ( SELECT task_id, SUM(TIMESTAMPDIFF(SECOND, start_time, end_time) / 60) AS 'duration', MIN(start_time) AS 'started', MAX(end_time) AS 'ended' FROM worktime GROUP BY task_id) w
                 ON t.id = task_id";
         $result = $this->conn->query($sql);
