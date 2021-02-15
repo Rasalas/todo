@@ -429,7 +429,7 @@ if (isset($_GET['task'])) {
 
             while ($row = $result->fetch_assoc()) {
                 $task['text'] = $row['text'];
-                $task['description'] = htmlentities($row['description']);
+                $task['description'] = $row['description']; // no htmlentities?
             }
 
             echo $twig->render('task_form.html', [
