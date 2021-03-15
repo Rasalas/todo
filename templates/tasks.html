@@ -9,7 +9,7 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>ToDo - Aufgaben</h1>
+            <h1>ToDo - Aufgaben [{{ sumduration }}]</h1>
           </div>
           <!-- <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
@@ -34,7 +34,7 @@
               <div class="card-header">
                 <h3 class="card-title">
                   <i class="ion ion-clipboard mr-1"></i>
-                  To Do List - <b>{{ sumduration }}</b>
+                  Heutige Aufgaben <b>[{{ sumduration_today }}]</b>
                 </h3>
 
                 <!-- <div class="card-tools">
@@ -90,7 +90,7 @@
           <div class="col-md-6">
             <div class="card">
               <div class="card-header">
-                <h3 class="card-title">Erledigte Aufgaben</h3>
+                <h3 class="card-title">Erledigte Aufgaben <b>[{{ sumduration_done }}]</b></h3>
                 <a href="bill-create"><button type="button" class="btn btn-info float-right"><i class="fas fa-receipt"></i> Abrechnen</button></a>
               </div>
               <!-- /.card-header -->
@@ -119,7 +119,7 @@
             </div>
             <div class="card">
               <div class="card-header">
-                <h3 class="card-title">Abgerechnete Aufgaben</h3>
+                <h3 class="card-title">Abgerechnete Aufgaben <b>[{{ sumduration_billed }}]</b></h3>
               </div>
               <!-- /.card-header -->
               <div class="card-body table-responsive p-0" style="min-height: 100px; max-height: 300px;">

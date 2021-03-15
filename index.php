@@ -265,6 +265,9 @@ if (isset($_GET['task'])) {
             $result_tasks = $database->getAllTasksByProjectID($_SESSION['project_id']);
             $result_done_tasks = $database->getAllDoneTasksByProjectID($_SESSION['project_id']);
             $sum_duration = $database->getProjectDuration($_SESSION['project_id']);
+            $sum_duration_done = $database->getProjectDurationDone($_SESSION['project_id']);
+            $sum_duration_today = $database->getProjectDurationToday($_SESSION['project_id']);
+            $sum_duration_billed = $database->getProjectDurationBilled($_SESSION['project_id']);
             $result_bills = $database->getBillByProjectAndUserID([ 'project_id' => $_SESSION['project_id'], 'user_id' => $_SESSION['uid']]);
             
             // tasks
@@ -307,6 +310,9 @@ if (isset($_GET['task'])) {
                 'menu' => ['tasks_top' => 1, 'tasks_overview' => 1, 'projects_top' => 1],
                 'project_id' => $_SESSION['project_id'],
                 'sumduration' => formatTime($sum_duration),
+                'sumduration_done' => formatTime($sum_duration_done),
+                'sumduration_today' => formatTime($sum_duration_today),
+                'sumduration_billed' => formatTime($sum_duration_billed),
                 'title' => 'ToDo'
             ];
             if (isset($_SESSION['active_wt_insert_id'])) {
@@ -515,7 +521,7 @@ if (isset($_GET['task'])) {
             $page['button_save_title'] = 'Abrechnung speichern';
             $page['button_save_link'] = 'bill-insert/';
 
-            $data['sum_duration'] =  $database->getDoneTasksOfProjectDuration($_SESSION['project_id']);
+            $data['sum_duration'] =  $database->getProjectDurationDone($_SESSION['project_id']);
             $data['sum_duration_ez'] = formatTime($data['sum_duration']);
             
             echo $twig->render('bill_form.html', [

@@ -192,6 +192,57 @@ class database
     }
 
     /**
+     * GET SUM(duration) by project_id (done)
+     * 
+     * @return resutl|msqli_result
+     */
+    public function getProjectDurationDone($id)
+    {
+        $project_id = mysqli_real_escape_string($this->conn, $id);
+        $sql = "SELECT project_id, SUM(duration) AS 'sum_duration' FROM
+            (SELECT id, project_id FROM task WHERE `project_id`= '" . $project_id . "' AND is_done = 1 AND bill_id IS NULL) t
+            LEFT JOIN ( SELECT task_id, SUM(TIMESTAMPDIFF(SECOND, start_time, end_time) / 60) AS 'duration' FROM worktime GROUP BY task_id) w
+            ON t.id = task_id";
+
+        $result = $this->conn->query($sql)->fetch_object()->sum_duration;
+        return $result;
+    }
+
+    /**
+     * GET SUM(duration) by project_id (today)
+     * 
+     * @return resutl|msqli_result
+     */
+    public function getProjectDurationToday($id)
+    {
+        $project_id = mysqli_real_escape_string($this->conn, $id);
+        $sql = "SELECT project_id, SUM(duration) AS 'sum_duration' FROM
+            (SELECT id, project_id FROM task WHERE `project_id`= '" . $project_id . "' AND (timestamp_done >=(NOW()-INTERVAL 10 HOUR) OR timestamp_done IS NULL)) t
+            LEFT JOIN ( SELECT task_id, SUM(TIMESTAMPDIFF(SECOND, start_time, end_time) / 60) AS 'duration' FROM worktime GROUP BY task_id) w
+            ON t.id = task_id";
+
+        $result = $this->conn->query($sql)->fetch_object()->sum_duration;
+        return $result;
+    }
+
+        /**
+     * GET SUM(duration) by project_id (billed)
+     * 
+     * @return resutl|msqli_result
+     */
+    public function getProjectDurationBilled($id)
+    {
+        $project_id = mysqli_real_escape_string($this->conn, $id);
+        $sql = "SELECT project_id, SUM(duration) AS 'sum_duration' FROM
+            (SELECT id, project_id FROM task WHERE `project_id`= '" . $project_id . "' AND bill_id IS NOT NULL) t
+            LEFT JOIN ( SELECT task_id, SUM(TIMESTAMPDIFF(SECOND, start_time, end_time) / 60) AS 'duration' FROM worktime GROUP BY task_id) w
+            ON t.id = task_id";
+
+        $result = $this->conn->query($sql)->fetch_object()->sum_duration;
+        return $result;
+    }
+
+    /**
      * GET SUM(duration) by project_id of done tasks
      * 
      * @return resutl|msqli_result
@@ -295,7 +346,7 @@ class database
     public function getAllTasksByProjectID($id)
     {
         $sql = "SELECT * FROM
-                (SELECT id, project_id, `text`, `description`, is_done FROM task WHERE (timestamp_done >=(NOW()-INTERVAL 10 HOUR) OR timestamp_done IS NULL) AND `project_id`= '" . mysqli_real_escape_string($this->conn, $id) . "') t
+                (SELECT id, project_id, `text`, `description`, is_done FROM task WHERE (timestamp_done >=(NOW()-INTERVAL 10 HOUR) OR timestamp_done IS NULL) AND `project_id`= '" . mysqli_real_escape_string($this->conn, $id) . "' AND bill_id IS NULL) t
                 LEFT JOIN ( SELECT task_id, SUM(TIMESTAMPDIFF(SECOND, start_time, end_time) / 60) AS 'duration', MIN(start_time) AS 'started', MAX(end_time) AS 'ended' FROM worktime GROUP BY task_id) w
                 ON t.id = task_id";
         $result = $this->conn->query($sql);
