@@ -249,6 +249,7 @@ if (isset($_GET['task'])) {
                 $_SESSION['project_id'] = $_POST['project_id'];
                 unset($_POST['project_id']);
             }
+            
             // Clean content
             $tasks = NULL;
             $done_tasks = NULL;
