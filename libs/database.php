@@ -37,9 +37,9 @@ class database
         if ($this->conn->connect_error) {
             die("Connection failed: " . $this->conn->connect_error);
         }
-        // Set database charset utf8
-        if (!$this->conn->set_charset("utf8")) {
-            die("Error loading character set utf8: " . $this->conn->connect_error);
+        // Set database charset utf8mb4
+        if (!$this->conn->set_charset("utf8mb4")) {
+            die("Error loading character set utf8mb4: " . $this->conn->connect_error);
         }
     }
 
@@ -148,7 +148,7 @@ class database
                 '" . $is_paid . "'
             );
         ";
-        $sql .= "UPDATE task SET bill_id = LAST_INSERT_ID() WHERE project_id = '". $project_id ."' AND user_id = '". $user_id ."'"; 
+        $sql .= "UPDATE task SET bill_id = LAST_INSERT_ID() WHERE project_id = '". $project_id ."' AND user_id = '". $user_id ."' AND is_done = 1"; 
         #echo $sql;
 
         if (!$this->conn->multi_query($sql)) {
@@ -279,7 +279,7 @@ class database
     public function getProjectsByUserID($form_result)
     {
         $user_id = mysqli_real_escape_string($this->conn, $form_result['uid']);
-        $sql = "SELECT p.id, is_admin, `name` FROM workgroup, project p WHERE p.id = project_id AND user_id = " . $user_id . ";";
+        $sql = "SELECT p.id, is_admin, `name` FROM workgroup, project p WHERE p.id = project_id AND user_id = " . $user_id . " AND is_done = 0 ORDER BY `name`;";
         #echo $sql;
         $result = $this->conn->query($sql);
         return $result;
