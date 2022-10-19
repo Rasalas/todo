@@ -1,4 +1,5 @@
 <?php
+
 include('auth.php');
 //$_SESSION['angemeldet'] = true;
 //$_SESSION['uid'] = 1;
@@ -66,7 +67,7 @@ if (isset($_GET['task'])) {
 
                 // if already logged in, going back in history ### doesn't seem to do anything - cached?
                 if (isset($_SESSION['angemeldet']) && $_SESSION['angemeldet']) {
-                    $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/todo/projects/";
+                    $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/projects/";
                     header($redirect);
                 }
 
@@ -83,12 +84,12 @@ if (isset($_GET['task'])) {
                     $_SESSION['uid'] = $user['id'];
                     $_SESSION['angemeldet'] = true;
 
-                    $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/todo/projects";
+                    $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/projects";
                     header($redirect);
                 } else { // error - back to login
                     $_SESSION['error'] = 'E-Mail oder Passwort falsch';
 
-                    $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/todo/login";
+                    $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/login";
                     header($redirect);
                 }
             }
@@ -148,10 +149,10 @@ if (isset($_GET['task'])) {
 
                     $result = $database->createUser($firstname, $lastname, $email, $password_hash);
 
-                    $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/todo/login";
+                    $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/login";
                     header($redirect);
                 } else { // error - back to register
-                    $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/todo/register";
+                    $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/register";
                     header($redirect);
                 }
             }
@@ -169,7 +170,7 @@ if (isset($_GET['task'])) {
             } else {
                 $protocol = 'http';
             }
-            $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/todo/login";
+            $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/login";
             header($redirect);
             break;
         case 'projects':
@@ -205,7 +206,7 @@ if (isset($_GET['task'])) {
             } else {
                 $protocol = 'http';
             }
-            $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/todo/tasks/" . $_SESSION['project_id'];
+            $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/tasks/" . $_SESSION['project_id'];
 
             header($redirect);
             exit;
@@ -234,7 +235,7 @@ if (isset($_GET['task'])) {
             } else {
                 $protocol = 'http';
             }
-            $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/todo/tasks/" . $_SESSION['project_id'];
+            $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/tasks/" . $_SESSION['project_id'];
             header($redirect);
             exit;
 
@@ -354,7 +355,7 @@ if (isset($_GET['task'])) {
             } else {
                 $protocol = 'http';
             }
-            $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/todo/tasks/" . $_SESSION['project_id'];
+            $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/tasks/" . $_SESSION['project_id'];
             header($redirect);
             exit;
 
@@ -373,7 +374,7 @@ if (isset($_GET['task'])) {
             } else {
                 $protocol = 'http';
             }
-            $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/todo/tasks/" . $_SESSION['project_id'];
+            $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/tasks/" . $_SESSION['project_id'];
             header($redirect);
             exit;
 
@@ -390,7 +391,7 @@ if (isset($_GET['task'])) {
             } else {
                 $protocol = 'http';
             }
-            $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/todo/tasks/" . $_SESSION['project_id'];
+            $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/tasks/" . $_SESSION['project_id'];
             header($redirect);
             exit;
 
@@ -409,7 +410,7 @@ if (isset($_GET['task'])) {
             } else {
                 $protocol = 'http';
             }
-            $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/todo/tasks/" . $_SESSION['project_id'];
+            $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/tasks/" . $_SESSION['project_id'];
             header($redirect);
             exit;
 
@@ -466,7 +467,7 @@ if (isset($_GET['task'])) {
             } else {
                 $protocol = 'http';
             }
-            $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/todo/tasks/" . $_SESSION['project_id'];
+            $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/tasks/" . $_SESSION['project_id'];
             header($redirect);
             exit;
 
@@ -490,7 +491,7 @@ if (isset($_GET['task'])) {
             } else {
                 $protocol = 'http';
             }
-            $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/todo/tasks/" . $_SESSION['project_id'];
+            $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/tasks/" . $_SESSION['project_id'];
             header($redirect);
 
             break;
@@ -511,7 +512,7 @@ if (isset($_GET['task'])) {
             } else {
                 $protocol = 'http';
             }
-            $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/todo/tasks/" . $_SESSION['project_id'];
+            $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/tasks/" . $_SESSION['project_id'];
             header($redirect);
 
         case 'bill-create':
@@ -551,7 +552,7 @@ if (isset($_GET['task'])) {
             } else {
                 $protocol = 'http';
             }
-            $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/todo/tasks/" . $_SESSION['project_id'];
+            $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/tasks/" . $_SESSION['project_id'];
             header($redirect);
             exit;
 
@@ -571,7 +572,7 @@ if (isset($_GET['task'])) {
     } else {
         $protocol = 'http';
     }
-    $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/todo/projects";
+    $redirect = "Location: " . $protocol . "://" . $_SERVER['SERVER_NAME'] . "/projects";
     header($redirect);
 }
 

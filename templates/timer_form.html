@@ -5,7 +5,7 @@
     </nav>
     <div class="container px-5">
         <h4 id="timer">0d 0h 00m 00s</h4>
-        <form action="/todo/timer-stop" method="POST">
+        <form action="/timer-stop" method="POST">
             <input type="hidden" id="task_id" name="task_id" value="{{ task_id }}">
             <input type="hidden" id="insert_id" name="insert_id" value="{{ insert_id}}">
             <button type="submit" class="btn btn-primary">Timer stoppen</button>

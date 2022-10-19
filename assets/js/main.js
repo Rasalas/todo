@@ -92,11 +92,11 @@ $( document ).ready(function() {
     $('input[name=todo]').change(function(){
         if($(this).is(':checked')){
                 //task-done
-                $link = "/todo/task-done/"+$(this).attr("value");
+                $link = "/task-done/"+$(this).attr("value");
                 window.location.href = $link;
             } else {
                 //task-undone
-                $link = "/todo/task-undone/"+$(this).attr("value");
+                $link = "/task-undone/"+$(this).attr("value");
                 window.location.href = $link;
             }
         });
